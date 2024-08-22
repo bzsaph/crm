@@ -1,8 +1,13 @@
 <?php
-use App\Commentonproject;
-use App\Newproject;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\BillingController;
+use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RoleandPermissionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,45 +26,49 @@ Route::get('/','Userscontroller@welcome');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/newprojectinsert','HomeController@newprojectinsert');
-Route::post('/storeproject','HomeController@storeproject');
-Route::get('/Read/{id}','Userscontroller@Readstory');
-Route::post('/Comenttostory','Userscontroller@Comenttostory');
-Route::get('Previous/{id}', 'Userscontroller@Previous');
-Route::get('Next/{id}', 'Userscontroller@Next');
-Route::get('/viewprojectsented', 'HomeController@viewprojectsented');
-Route::post('/comentontheproject', 'HomeController@comentontheproject');
-Route::get('/commentonproject/{id}','HomeController@commentonproject');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/newrole', [RoleandPermissionController::class, 'newrole']);
+    Route::get('/setting', [RoleandPermissionController::class, 'setting']);
+    Route::post('/postpermission', [RoleandPermissionController::class, 'postpermission']);
+    Route::post('/postrole', [RoleandPermissionController::class, 'postrole']);
+    Route::post('/roleupdate/{id}', [RoleandPermissionController::class, 'roleupdate']);
+    
+    Route::get('/newuser', [HomeController::class, 'newuser']);
+    Route::post('admin/newuser', [HomeController::class, 'storenewuser']);
+    Route::get('all/user', [HomeController::class, 'alluser']);
+    Route::get('/edituser/{id}', [HomeController::class, 'edituser']);
+    Route::any('/admin/updateuser', [HomeController::class, 'updateuser']);
+   
+    // Clients
+    Route::resource('clients', ClientController::class);
+
+    // Billing
+    Route::post('billing/monthly', [BillingController::class, 'createMonthlySubscription'])->name('billing.createMonthly');
+    Route::post('billing/yearly', [BillingController::class, 'createYearlySubscription'])->name('billing.createYearly');
+
+    // Reminders
+    Route::post('reminders', [ReminderController::class, 'store'])->name('reminders.store');
+    Route::get('reminders/send', [ReminderController::class, 'sendReminders'])->name('reminders.send');
+
+    // Complaints
+    Route::resource('complaints', ComplaintController::class);
+
+    // Reports
+    Route::resource('reports', ReportController::class);
+
+    // Tasks
+    Route::get('clients/{client}/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::post('tasks/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
+
+    
+   
+});
 
 
-Route::get('/Message', 'Userscontroller@Messages');
-Route::get('/newrole', 'HomeController@newrole');
-Route::get('/setting', 'HomeController@setting');
-Route::post('/postpermission', 'HomeController@postpermission');
-Route::post('/postrole', 'HomeController@postrole');
-Route::get('/viewstory', 'HomeController@viewstory');
-Route::get('/newuser', 'HomeController@newuser');
-Route::post('admin/newuser', 'HomeController@storenewuser');
-Route::get('all/user', 'HomeController@alluser');
-Route::get('/edituser/{id}','HomeController@edituser');
-Route::any('/admin/updateuser', 'HomeController@updateuser');
-Route::post('/roleupdate/{id}', 'HomeController@roleupdate');
-Route::get('/newproduct', 'HomeController@newproduct');
-Route::post('/postnewproduct', 'HomeController@postnewproduct');
-Route::get('/newcompany', 'HomeController@newcompany');
-
-Route::post('/insertnewcompany', 'HomeController@insertnewcompany');
-Route::any('/indexcreatecompany', 'HomeController@indexcreatecompany');
-Route::any('/storeinternaship', 'HomeController@storeinternaship');
-
-Route::any('/addreportoftheweek/{id}', 'HomeController@addreportoftheweek');
-Route::any('/postweekreport', 'HomeController@postweekreport');
-Route::any('/allcompany', 'HomeController@allcompany');
 
 
-
-
-
-Auth::routes(['register' => true]);
+// Auth::routes(['register' => true]);
 

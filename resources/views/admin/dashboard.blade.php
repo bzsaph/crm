@@ -34,7 +34,7 @@
                     <!-- START card-->
                     <div class="card flex-row align-items-center align-items-stretch border-0">
                         <div class="col-4 d-flex align-items-center bg-primary-dark justify-content-center rounded-left">
-                            {{$countactive}}
+                            {{-- {{$countactive}} --}}
                         </div>
                         <div class="col-8 py-3 bg-primary rounded-right">
 
@@ -49,7 +49,7 @@
                     <!-- START card-->
                     <div class="card flex-row align-items-center align-items-stretch border-0">
                         <div class="col-4 d-flex align-items-center bg-primary-dark justify-content-center rounded-left">
-                            {{$countinactive}}
+                            {{-- {{$countinactive}} --}}
                         </div>
                         <div class="col-8 py-3 bg-primary rounded-right">
 
@@ -64,7 +64,7 @@
                     <!-- START card-->
                     <div class="card flex-row align-items-center align-items-stretch border-0">
                         <div class="col-4 d-flex align-items-center bg-primary-dark justify-content-center rounded-left">
-                            {{ $companys }}
+                            {{-- {{ $companys }} --}}
                         </div>
                         <div class="col-8 py-3 bg-primary rounded-right">
 
@@ -106,7 +106,7 @@
                         <div class="text-info">Active internship In this month</div>
                         <div class="text-center py-4">
                             <div class="easypie-chart easypie-chart-lg" data-easypiechart="" data-percent="70" data-animate="{&quot;duration&quot;: &quot;800&quot;, &quot;enabled&quot;: &quot;true&quot;}" data-bar-color="#23b7e5" data-track-color="rgba(200,200,200,0.4)" data-scale-color="false" data-line-width="10" data-line-cap="round" data-size="145">
-                                <span>{{ $post }}</span>
+                                {{-- <span>{{ $post }}</span> --}}
                                 <canvas height="100% !important" width="217" style="height: 145px; width: 145px;"></canvas></div>
                         </div>
                         <div class="text-center" data-sparkline="" data-bar-color="#23b7e5" data-height="30" data-bar-width="5" data-bar-spacing="2" data-values=""><canvas width="131" height="30" style="display: inline-block; width: 131px; height: 30px; vertical-align: top;"></canvas></div>

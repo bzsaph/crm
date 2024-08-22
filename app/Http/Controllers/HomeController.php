@@ -45,13 +45,12 @@ class HomeController extends Controller
         $today = Carbon::now();
         $today->month; // retrieve the month
         $today->year;
-        $post = Requestinternashipmodel::whereYear('created_at', '=',  $today->year)
-              ->whereMonth('created_at', '=', $today->month)
-              ->count();
+        $post = [];
+             
 
-        $countactive = Newproject::where('status', 'active')->count();
-        $countinactive = Newproject::where('status', 'inactive')->count();
-        $companys = Companysofferintership::where('status', 'active')->count();
+        $countactive = [];
+        $countinactive =[];
+        $companys = [];
         return view('admin.dashboard', compact('countactive', 'countinactive','companys','post'));
     }
     public function newprojectinsert()
@@ -81,39 +80,7 @@ class HomeController extends Controller
         }
     }
 
-    public function newrole()
-    {
-        return view('admin.role');
-    }
-    public function setting()
-    {
-        $role = Role::all();
-        $permissions = Permission::all();
-
-        return view('admin.setting', compact('role', 'permissions'));
-    }
-    public function postpermission(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => ['required', 'unique:permissions', 'max:255'],
-        ]);
-        $category = new Permission();
-        $category->name = $request->name;
-        $category->save();
-        Session::flash('message', "Permission created successfull");
-        return Redirect::back();
-    }
-    public function postrole(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => ['required', 'unique:roles', 'max:255'],
-        ]);
-        $category = new Role();
-        $category->name = $request->name;
-        $category->save();
-        Session::flash('message', "Role created successfull");
-        return Redirect::back();
-    }
+    
     public function viewstory()
     {
         $story = Newstory::all();
