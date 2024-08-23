@@ -289,14 +289,14 @@
                                 <span data-localize="sidebar.nav.pages.BILLING" style="color:#fff !important">Billing</span>
                             </a>
                             <ul class="sidebar-nav sidebar-subnav collapse" id="indexBilling">
-                                <li class="sidebar-subnav-header">Billing</li>
+                                <li class="sidebar-subnav-header" >Billing</li>
                                 <li class=" ">
-                                    <a href="{{ route('billing.createMonthly') }}" title="Create Monthly Subscription">
+                                    <a href="{{ route('billing.createMonthly') }}" title="Create Monthly Subscription" >
                                         <span data-localize="sidebar.nav.pages.MONTHLY_SUBSCRIPTION">Monthly Subscription</span>
                                     </a>
                                 </li>
                                 <li class=" ">
-                                    <a href="{{ route('billing.createYearly') }}" title="Create Yearly Subscription">
+                                    <a href="{{ route('billing.createYearly') }}" title="Create Yearly Subscription" >
                                         <span data-localize="sidebar.nav.pages.YEARLY_SUBSCRIPTION">Yearly Subscription</span>
                                     </a>
                                 </li>
@@ -311,13 +311,11 @@
                             <ul class="sidebar-nav sidebar-subnav collapse" id="indexComplaints">
                                 <li class="sidebar-subnav-header">Complaints</li>
                                 <li class=" ">
-                                    <!-- Provide a default or ensure $client is available -->
                                     <a href="{{ route('complaints.index', ['client' => $client->id ?? 1]) }}" title="View Complaints">
                                         <span data-localize="sidebar.nav.pages.VIEW_COMPLAINTS">View Complaints</span>
                                     </a>
                                 </li>
                                 <li class=" ">
-                                    <!-- Provide a default or ensure $client is available -->
                                     <a href="{{ route('complaints.create', ['client' => $client->id ?? 1]) }}" title="Register Complaint">
                                         <span data-localize="sidebar.nav.pages.REGISTER_COMPLAINT">Register Complaint</span>
                                     </a>
@@ -331,34 +329,51 @@
                                 <span data-localize="sidebar.nav.pages.REPORTS" style="color:#fff !important">Reports</span>
                             </a>
                             <ul class="sidebar-nav sidebar-subnav collapse" id="indexReports">
-                                <li class="sidebar-subnav-header">Reports</li>
+                                <li class="sidebar-subnav-header" >Reports</li>
                                 <li class=" ">
-                                    <a href="{{ route('reports.index') }}">View Reports</a>
+                                    <a href="{{ route('reports.index') }}" >View Reports</a>
                                 </li>
                                 <li class=" ">
-                                    <a href="{{ route('reports.create') }}" title="Create Report">
+                                    <a href="{{ route('reports.create') }}" title="Create Report" >
                                         <span data-localize="sidebar.nav.pages.CREATE_REPORT">Create Report</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('billing.index') }}" style="color:#fff !important">
+                                <i class="fas fa-file-invoice"></i>
+                                <span>Billing</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('stock.index') }}"  style="color:#fff !important">
+                                <i class="fas fa-boxes"></i>
+                                <span>Stock Management</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('stock.sold') }}"  style="color:#fff !important">
+                                <i class="fas fa-box-open"></i>
+                                <span>Sold Stock</span>
+                            </a>
+                        </li>
+                        
                         <li class="">
-                            <a href="#indexTasks" title="Tasks" data-toggle="collapse">
-                                <em class="icon-list" style="color:#fff !important"></em>
-                                <span data-localize="sidebar.nav.pages.TASKS" style="color:#fff !important">Tasks</span>
+                            <a href="#indexTasks" title="Tasks" data-toggle="collapse"  style="color:#fff !important">
+                                <em class="icon-list"></em>
+                                <span data-localize="sidebar.nav.pages.TASKS">Tasks</span>
                             </a>
                             <ul class="sidebar-nav sidebar-subnav collapse" id="indexTasks">
-                                <li class="sidebar-subnav-header">Tasks</li>
+                                <li class="sidebar-subnav-header" >Tasks</li>
                                 <li class=" ">
-                                    <!-- Provide a default or ensure $client is available -->
-                                    <a href="{{ route('tasks.index', ['client' => $client->id ?? 1]) }}" title="View Tasks">
+                                    <a href="{{ route('tasks.index', ['client' => $client->id ?? 1]) }}" title="View Tasks" style="color:#fff !important">
                                         <span data-localize="sidebar.nav.pages.VIEW_TASKS">View Tasks</span>
                                     </a>
                                 </li>
                                 <li class=" ">
-                                    <!-- Provide a default or ensure $client is available -->
-                                    <a href="{{ route('tasks.create', ['client' => $client->id ?? 1]) }}" title="Add Task">
+                                    <a href="{{ route('tasks.create', ['client' => $client->id ?? 1]) }}" title="Add Task" style="color:#fff !important">
                                         <span data-localize="sidebar.nav.pages.ADD_TASK">Add Task</span>
                                     </a>
                                 </li>

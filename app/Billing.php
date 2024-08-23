@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Models;
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Reminder;
@@ -18,4 +18,5 @@ class Billing extends Model
     {
         return $this->hasMany(Reminder::class);
     }
+    
 }

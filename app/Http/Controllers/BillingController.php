@@ -40,4 +40,22 @@ class BillingController extends Controller
 
         return redirect()->back()->with('success', 'Yearly subscription created.');
     }
+    public function index()
+    {
+    
+        $clients = Client::with('billing')->get();
+        return view('admin.billing.index', compact('clients'));
+    }
+
+    public function show($clientId)
+    {
+        $client = Client::with('billing')->findOrFail($clientId);
+        return view('admin.billing.details', compact('client'));
+    }
+
+    public function remind($clientId)
+    {
+        // Logic to remind the client to pay
+        return redirect()->route('billing.index')->with('success', 'Reminder sent.');
+    }
 }

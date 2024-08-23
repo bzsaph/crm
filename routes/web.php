@@ -8,6 +8,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleandPermissionController;
+use App\Http\Controllers\StockController;
 
 Auth::routes();
 Route::get('/', 'Userscontroller@welcome');
@@ -66,4 +67,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('clients/{client}/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::post('tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::post('tasks/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
+
+// Billing Routes
+Route::prefix('billing')->name('billing.')->group(function () {
+    Route::get('/', [BillingController::class, 'index'])->name('index');
+    Route::get('/{client}/details', [BillingController::class, 'show'])->name('details');
+    Route::get('/{client}/remind', [BillingController::class, 'remind'])->name('remind');
+});
+
+// Stock Routes
+Route::prefix('stock')->name('stock.')->group(function () {
+    Route::get('/', [StockController::class, 'index'])->name('index');
+    Route::get('/create', [StockController::class, 'create'])->name('create');
+    Route::post('/', [StockController::class, 'store'])->name('store');
+    Route::get('/{stock}/edit', [StockController::class, 'edit'])->name('edit');
+    Route::put('/{stock}', [StockController::class, 'update'])->name('update');
+    Route::get('/sold', [StockController::class, 'sold'])->name('sold');
+});
 });
