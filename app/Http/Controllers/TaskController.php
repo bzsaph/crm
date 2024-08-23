@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
-use App\Models\Client;
+use App\Task;
+use App\Client;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller

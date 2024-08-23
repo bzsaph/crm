@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Billing;
-use App\Models\Client;
+use App\Billing;
+use App\Client;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 

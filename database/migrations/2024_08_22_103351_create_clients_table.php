@@ -13,6 +13,7 @@ class CreateClientsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('clients'); // Drop the table if it exists
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -20,7 +21,8 @@ class CreateClientsTable extends Migration
             $table->string('phone')->nullable();
             $table->string('managed_by')->nullable();
             $table->string('status')->default('1');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('user_id')->nullable()->index();
+          
             $table->timestamps();
         });
     }

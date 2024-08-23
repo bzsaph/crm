@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reminder;
-use App\Models\Client;
-use App\Models\Billing;
+use App\Reminder;
+use App\Client;
+use App\Billing;
 use Illuminate\Http\Request;
 
 class ReminderController extends Controller

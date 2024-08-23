@@ -19,6 +19,7 @@ class CreateRemindersTable extends Migration
             $table->foreignId('billing_id')->constrained()->onDelete('cascade');
             $table->date('reminder_date');
             $table->boolean('email_sent')->default(false);
+            $table->integer('loged_in_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();
             $table->timestamps();
         });
     }

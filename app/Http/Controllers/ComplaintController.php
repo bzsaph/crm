@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Complaint;
-use App\Models\Client;
+use App\Complaint;
+use App\Client;
 use Illuminate\Http\Request;
 
 class ComplaintController extends Controller
@@ -13,6 +13,19 @@ class ComplaintController extends Controller
         $complaints = Complaint::all();
         return view('admin.complaints.index', compact('complaints'));
     }
+    public function create($clientId)
+    {
+        // Fetch clients or any required data
+        $client = Client::find($clientId);
+        
+        if (!$client) {
+            return redirect()->route('clients.index')->with('error', 'Client not found.');
+        }
+
+        return view('admin.complaints.create', compact('client'));
+    }
+
+    
 
     public function store(Request $request)
     {

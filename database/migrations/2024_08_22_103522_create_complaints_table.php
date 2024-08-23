@@ -18,7 +18,7 @@ class CreateComplaintsTable extends Migration
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->text('complaint_text');
             $table->enum('status', ['open', 'resolved', 'closed'])->default('open');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('loged_in_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();
             $table->timestamps();
         });
     }

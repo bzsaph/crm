@@ -239,28 +239,7 @@
 
                         {{-- end of the dashord part --}}
 
-                        <li class="">
-                            <a href="#project" title="Project submite and  review" data-toggle="collapse">
-                                <em class="icon-doc" style="color:#fff !important"></em>
-                                <span data-localize="sidebar.nav.pages.PAGES" style="color:#fff !important">PROJECT </span>
-                            </a>
-                            <ul class="sidebar-nav sidebar-subnav collapse" id="project">
-                                <li class="sidebar-subnav-header">PROJECT</li>
-                                <li class=" ">
-                                    <a href="/newprojectinsert" title="new project">
-                                        <span data-localize="sidebar.nav.pages.LOGIN">New Project</span>
-                                    </a>
-                                </li>
-                                <li class=" ">
-                                    <a href="/viewprojectsented" title="New category">
-                                        {{-- <div class="float-right badge badge-success">{!!$selectunreaded!!}</div> --}}
-                                        <span data-localize="sidebar.nav.pages.LOGIN">View project</span>
-                                    </a>
-                                </li>
-
-
-                            </ul>
-                        </li>
+                       
                         {{-- doropdown  in to create lore and pamissinon --}}
                         @can('privillage-view')
 
@@ -284,48 +263,110 @@
                             </ul>
                         </li>
                         @endcan
-                        @can('company')
                         <li class="">
-                            <a href="#indexcreatecompany" title="companys" data-toggle="collapse">
-                                <em class="icon-note" style="color:#fff !important"></em>
-                                <span data-localize="sidebar.nav.pages.PAGES" style="color:#fff !important">Internership</span>
+                            <a href="#indexClientManagement" title="Client Management" data-toggle="collapse">
+                                <em class="icon-user" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.CLIENT_MANAGEMENT" style="color:#fff !important">Client Management</span>
                             </a>
-                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexcreatecompany">
-                                <li class="sidebar-subnav-header">Internership</li>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexClientManagement">
+                                <li class="sidebar-subnav-header">Client Management</li>
                                 <li class=" ">
-                                    <a href="/newcompany" title="indexcreatecompany">
-                                        <span data-localize="sidebar.nav.pages.LOGIN">New company</span>
+                                    <a href="{{ route('clients.index') }}" title="View Clients">
+                                        <span data-localize="sidebar.nav.pages.VIEW_CLIENTS">View Clients</span>
                                     </a>
                                 </li>
                                 <li class=" ">
-                                    <a href="/indexcreatecompany" title="permission">
-                                        <span>Report and requests</span>
+                                    <a href="{{ route('clients.create') }}" title="Add New Client">
+                                        <span data-localize="sidebar.nav.pages.ADD_NEW_CLIENT">Add New Client</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        @endcan
-                        {{-- @can('view_interneshipcomny') --}}
+                        
                         <li class="">
-                            <a href="#indexcreatecompany" title="companys" data-toggle="collapse">
-                                <em class="icon-note" style="color:#fff !important"></em>
-                                <span data-localize="sidebar.nav.pages.PAGES" style="color:#fff !important">Internership</span>
+                            <a href="#indexBilling" title="Billing" data-toggle="collapse">
+                                <em class="icon-wallet" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.BILLING" style="color:#fff !important">Billing</span>
                             </a>
-                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexcreatecompany">
-                                <li class="sidebar-subnav-header">Internership</li>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexBilling">
+                                <li class="sidebar-subnav-header">Billing</li>
                                 <li class=" ">
-                                    <a href="/newcompany" title="indexcreatecompany">
-                                        <span data-localize="sidebar.nav.pages.LOGIN">New company</span>
+                                    <a href="{{ route('billing.createMonthly') }}" title="Create Monthly Subscription">
+                                        <span data-localize="sidebar.nav.pages.MONTHLY_SUBSCRIPTION">Monthly Subscription</span>
                                     </a>
                                 </li>
                                 <li class=" ">
-                                    <a href="/indexcreatecompany" title="permission">
-                                        <span>Report and requests</span>
+                                    <a href="{{ route('billing.createYearly') }}" title="Create Yearly Subscription">
+                                        <span data-localize="sidebar.nav.pages.YEARLY_SUBSCRIPTION">Yearly Subscription</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        {{-- @endcan --}}
+                        
+                        <li class="">
+                            <a href="#indexComplaints" title="Complaints" data-toggle="collapse">
+                                <em class="icon-exclamation" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.COMPLAINTS" style="color:#fff !important">Complaints</span>
+                            </a>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexComplaints">
+                                <li class="sidebar-subnav-header">Complaints</li>
+                                <li class=" ">
+                                    <!-- Provide a default or ensure $client is available -->
+                                    <a href="{{ route('complaints.index', ['client' => $client->id ?? 1]) }}" title="View Complaints">
+                                        <span data-localize="sidebar.nav.pages.VIEW_COMPLAINTS">View Complaints</span>
+                                    </a>
+                                </li>
+                                <li class=" ">
+                                    <!-- Provide a default or ensure $client is available -->
+                                    <a href="{{ route('complaints.create', ['client' => $client->id ?? 1]) }}" title="Register Complaint">
+                                        <span data-localize="sidebar.nav.pages.REGISTER_COMPLAINT">Register Complaint</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="">
+                            <a href="#indexReports" title="Reports" data-toggle="collapse">
+                                <em class="icon-doc" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.REPORTS" style="color:#fff !important">Reports</span>
+                            </a>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexReports">
+                                <li class="sidebar-subnav-header">Reports</li>
+                                <li class=" ">
+                                    <a href="{{ route('reports.index') }}">View Reports</a>
+                                </li>
+                                <li class=" ">
+                                    <a href="{{ route('reports.create') }}" title="Create Report">
+                                        <span data-localize="sidebar.nav.pages.CREATE_REPORT">Create Report</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="">
+                            <a href="#indexTasks" title="Tasks" data-toggle="collapse">
+                                <em class="icon-list" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.TASKS" style="color:#fff !important">Tasks</span>
+                            </a>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexTasks">
+                                <li class="sidebar-subnav-header">Tasks</li>
+                                <li class=" ">
+                                    <!-- Provide a default or ensure $client is available -->
+                                    <a href="{{ route('tasks.index', ['client' => $client->id ?? 1]) }}" title="View Tasks">
+                                        <span data-localize="sidebar.nav.pages.VIEW_TASKS">View Tasks</span>
+                                    </a>
+                                </li>
+                                <li class=" ">
+                                    <!-- Provide a default or ensure $client is available -->
+                                    <a href="{{ route('tasks.create', ['client' => $client->id ?? 1]) }}" title="Add Task">
+                                        <span data-localize="sidebar.nav.pages.ADD_TASK">Add Task</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+
+                        
 
 
                     </ul>

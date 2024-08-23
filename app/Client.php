@@ -2,11 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-namespace App\Models;
-
 use App\Reminder;
 use App\Complaint;
 use App\Report;

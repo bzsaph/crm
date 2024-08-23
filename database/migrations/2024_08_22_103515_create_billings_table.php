@@ -20,7 +20,7 @@ class CreateBillingsTable extends Migration
             $table->string('month_year');
             $table->decimal('amount', 8, 2);
             $table->enum('status', ['paid', 'unpaid'])->default('unpaid');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('loged_in_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();
             $table->timestamps();
         });
     }
