@@ -9,5 +9,18 @@ class Stock extends Model
 {
     use HasFactory;
     protected $guarded = ['_token'];
-    protected $fillable = ['item_name', 'quantity', 'price', 'status']; // Add only your fields here
+   
+        protected $fillable = [
+            'item_name',
+            'quantity',
+            'remaining_stock',
+            'loged_in_id',
+            
+        ];
+    
+        // If you need to specify a relationship with the users table
+        public function user()
+        {
+            return $this->belongsTo(User::class, 'loged_in_id');
+        }
 }
