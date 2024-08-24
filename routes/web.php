@@ -9,6 +9,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleandPermissionController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\SaleController;
 
 Auth::routes();
 Route::get('/', 'Userscontroller@welcome');
@@ -84,4 +85,17 @@ Route::prefix('stock')->name('stock.')->group(function () {
     Route::put('/{stock}', [StockController::class, 'update'])->name('update');
     Route::get('/sold', [StockController::class, 'sold'])->name('sold');
 });
+
+
+Route::prefix('sales')->name('sales.')->group(function () {
+    Route::get('/', [SaleController::class, 'index'])->name('index');
+    Route::get('create', [SaleController::class, 'create'])->name('create');
+    Route::post('/', [SaleController::class, 'store'])->name('store');
+    Route::get('{id}', [SaleController::class, 'show'])->name('show');
+    Route::get('{id}/edit', [SaleController::class, 'edit'])->name('edit');
+    Route::put('{id}', [SaleController::class, 'update'])->name('update');
+    Route::delete('{id}', [SaleController::class, 'destroy'])->name('destroy');
+    Route::get('{id}/invoice', [SaleController::class, 'generateInvoice'])->name('invoice');
+});
+
 });

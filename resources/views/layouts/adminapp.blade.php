@@ -347,6 +347,44 @@
                                 <span>Billing</span>
                             </a>
                         </li>
+                        <li class="">
+                            <a href="#indexSales" title="Sales" data-toggle="collapse">
+                                <em class="icon-basket" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.SALES" style="color:#fff !important">Sales</span>
+                            </a>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="indexSales">
+                                <li class="sidebar-subnav-header">Sales</li>
+                                <li class="">
+                                    <a href="{{ route('sales.index') }}" title="View All Sales">
+                                        <span data-localize="sidebar.nav.pages.VIEW_SALES">View Sales</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ route('sales.create') }}" title="Add New Sale">
+                                        <span data-localize="sidebar.nav.pages.ADD_NEW_SALE">Add New Sale</span>
+                                    </a>
+                                </li>
+                                <!-- Conditional links based on whether $sale is available -->
+                                @isset($sale)
+                                    <li class="">
+                                        <a href="{{ route('sales.show', $sale->id) }}" title="View Sale">
+                                            <span data-localize="sidebar.nav.pages.VIEW_SALE">View Sale</span>
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="{{ route('sales.edit', $sale->id) }}" title="Edit Sale">
+                                            <span data-localize="sidebar.nav.pages.EDIT_SALE">Edit Sale</span>
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="{{ route('sales.invoice', $sale->id) }}" title="Download Invoice">
+                                            <span data-localize="sidebar.nav.pages.DOWNLOAD_INVOICE">Download Invoice</span>
+                                        </a>
+                                    </li>
+                                @endisset
+                            </ul>
+                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('stock.index') }}"  style="color:#fff !important">
                                 <i class="fas fa-boxes"></i>
@@ -379,11 +417,7 @@
                                 </li>
                             </ul>
                         </li>
-                        
-
-                        
-
-
+                    
                     </ul>
                     <!-- END sidebar nav-->
                 </nav>
@@ -393,7 +427,7 @@
         </aside>
         <!-- offsidebar-->
 
-        <div class="container">
+        <div class="container-fluid">
             @include('sweetalert::alert')
             @if ($message = Session::get('message'))
             <div class="alert alert-success text-center">
@@ -409,7 +443,7 @@
         <!-- Main section-->
         <!-- Page footer-->
         <footer class="footer-container">
-            <span>&copy; IIS</span>
+            <span>&copy; CRM BY YANJYE LIMITED</span>
         </footer>
     </div>
     <!-- =============== VENDOR SCRIPTS ===============-->
