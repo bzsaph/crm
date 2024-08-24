@@ -36,14 +36,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('reminders', [ReminderController::class, 'store'])->name('reminders.store');
     Route::get('reminders/send', [ReminderController::class, 'sendReminders'])->name('reminders.send');
 
-    // Complaints (Manual Routes)
-    Route::get('clients/{client}/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
-    Route::get('clients/{client}/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
-    Route::post('complaints', [ComplaintController::class, 'store'])->name('complaints.store');
-    Route::get('complaints/{complaint}', [ComplaintController::class, 'show'])->name('complaints.show');
-    Route::get('complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
-    Route::put('complaints/{complaint}', [ComplaintController::class, 'update'])->name('complaints.update');
-    Route::delete('complaints/{complaint}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
+
+    
+   
 
     // Clients (Manual Routes)
     Route::get('clients', [ClientController::class, 'index'])->name('clients.index');
@@ -61,7 +56,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reports/{report}', [ReportController::class, 'show'])->name('reports.show');
     Route::get('reports/{report}/edit', [ReportController::class, 'edit'])->name('reports.edit');
     Route::put('reports/{report}', [ReportController::class, 'update'])->name('reports.update');
-    Route::delete('reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+   
+   
 
     // Tasks
     Route::get('clients/{client}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
@@ -84,6 +80,22 @@ Route::prefix('stock')->name('stock.')->group(function () {
     Route::get('/{stock}/edit', [StockController::class, 'edit'])->name('edit');
     Route::put('/{stock}', [StockController::class, 'update'])->name('update');
     Route::get('/sold', [StockController::class, 'sold'])->name('sold');
+});
+Route::prefix('complaints')->name('complaints.')->group(function () {
+    // Route to display all complaints for a specific client
+    Route::get('/', [ComplaintController::class, 'index'])->name('index');
+    // Route to show the form for creating a new complaint
+    Route::get('/create', [ComplaintController::class, 'create'])->name('create');
+    // Route to store a new complaint
+    Route::post('/', [ComplaintController::class, 'store'])->name('store');
+    // Route to display a specific complaint
+    Route::get('/{complaint}', [ComplaintController::class, 'show'])->name('show');
+    // Route to show the form for editing a specific complaint
+    Route::get('/{complaint}/edit', [ComplaintController::class, 'edit'])->name('edit');
+    // Route to update a specific complaint
+    Route::put('/{complaint}', [ComplaintController::class, 'update'])->name('update');
+    // Route to delete a specific complaint
+    Route::delete('/{complaint}', [ComplaintController::class, 'destroy'])->name('destroy');
 });
 
 

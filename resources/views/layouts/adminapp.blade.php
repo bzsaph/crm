@@ -31,6 +31,8 @@
     <!-- =============== BOOTSTRAP STYLES ===============-->
     <link rel="stylesheet" href="{{ url('assets/admin/css/bootstrap.css')}}" id="bscss">
 
+    <link rel="stylesheet" href="{{ url('css/select2.css')}}" >
+
     <!-- Datatables-->
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/datatables.net-bs4/css/dataTables.bootstrap4.css')}}">
     <link rel="stylesheet" href="{{ url('assets/admin/vendor/datatables.net-keytable-bs/css/keyTable.bootstrap.css')}}">
@@ -436,9 +438,31 @@
                 </ul>
             </div>
             @endif
-
+            @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        <div class="container">
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        </div >
+       
             @yield('content')
-
+           
         </div>
         <!-- Main section-->
         <!-- Page footer-->
@@ -450,7 +474,8 @@
     <!-- MODERNIZR-->
     <script src="{{ url('assets/admin/vendor/modernizr/modernizr.custom.js')}}"></script>
     <!-- JQUERY-->
-    <script src="{{ url('assets/admin/vendor/jquery/dist/jquery.js')}}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="{{ url('assets/admin/vendor/jquery/dist/jquery.js')}}"></script> --}}
     <!-- BOOTSTRAP-->
     <script src="{{ url('assets/admin/vendor/popper.js/dist/umd/popper.js')}}"></script>
     <script src="{{ url('assets/admin/vendor/bootstrap/dist/js/bootstrap.js')}}"></script>
@@ -509,7 +534,9 @@
     <!-- =============== APP SCRIPTS ===============-->
     <script src="{{ url('assets/admin/js/app.js')}}"></script>
     <script src="{{ url('assets/admin/js/js.js')}}"></script>
-
+    <script src="{{ url('js/select2.js')}}"></script>
+    <script src="{{ url('js/site-en.json')}}"></script>
+    
     <script>
         $(document).ready(function() {
             $(".alert").slideDown(300).delay(5000).slideUp(300);

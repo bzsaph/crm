@@ -11,7 +11,11 @@ class SaleController extends Controller
     // Display a listing of the sales
     public function index()
     {
-        $sales = Sale::all(); // Retrieve all sales from the database
+        $sales = \DB::table('sales')
+        ->join('clients', 'sales.client_id', '=', 'clients.id')
+        ->select('sales.id', 'clients.name as client_name')
+        ->get();
+
         return view('admin.sales.index', compact('sales')); // Pass sales data to the index view
     }
 

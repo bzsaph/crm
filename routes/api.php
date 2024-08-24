@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ClientController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,3 +23,4 @@ Route::any('mc/{phone}', function($phone, Request $request){
     return $adminController->mc($phone, $request->input('message'));
 });
 Route::any('fines/{phone}/{message}/{names}','Userscontroller@fines')->name('fines');
+Route::get('clients/search', [ClientController::class, 'search'])->name('api.clients.search');
