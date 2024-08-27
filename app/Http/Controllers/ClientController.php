@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -14,23 +16,35 @@ class ClientController extends Controller
         return view('admin.clients.index', compact('clients'));
     }
 
-    // Show the form for creating a new client.
     public function create()
     {
-        return view('admin.clients.create');
+       
+         $activeUsers = User::activeInSameCompanies()->get();
+         // This will give you the raw SQL query
+   
+        return view('admin.clients.create', compact('activeUsers'));;
     }
 
     // Store a newly created client in the database.
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:clients',
-            'phone' => 'nullable|string',
+        // Validate input data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:clients,email',
+            'phone' => 'nullable|string|max:20',
+            'managed_by' => 'nullable|string|max:255',
+            'status' => 'required|boolean',
+            'client_type' => 'required|in:vendor,client', // Validate client_type
         ]);
 
-        Client::create($request->all());
-        return redirect()->route('clients.index')->with('success', 'Client added successfully.');
+        // Add the authenticated user as the logged_in_id
+        $validatedData['logged_in_id'] = auth()->user()->id;
+
+        // Create a new client
+        Client::create($validatedData);
+
+        return redirect()->route('companies.create')->with('success', 'Client created successfully!');
     }
 
     // Display the specified client.
@@ -42,8 +56,15 @@ class ClientController extends Controller
     // Show the form for editing the specified client.
     public function edit(Client $client)
     {
-        return view('admin.clients.edit', compact('client'));
-    }
+     
+       // Get the currently logged-in user
+       $loggedInUser = Auth::user();
+
+       // Fetch active users from the same company as the logged-in user
+       $activeUsers = User::activeInSameCompanies()->get();
+
+       return view('admin.clients.edit', compact('client', 'activeUsers'));
+        }
 
     // Update the specified client in the database.
     public function update(Request $request, Client $client)
@@ -61,16 +82,16 @@ class ClientController extends Controller
     // Remove the specified client from the database.
     public function destroy(Client $client)
     {
-        $client->delete();
+        // $client->delete();
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
     }
     public function search(Request $request)
-{
-    $query = $request->input('query');
-    $clients = Client::where('name', 'LIKE', "%{$query}%")->get(['id', 'name']);
+    {
+        $query = $request->input('query');
+        $clients = Client::where('name', 'LIKE', "%{$query}%")->get(['id', 'name']);
 
-    return response()->json($clients);
-}
+        return response()->json($clients);
+    }
     
     
 

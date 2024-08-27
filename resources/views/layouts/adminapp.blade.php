@@ -209,38 +209,62 @@
                                 <span data-localize="sidebar.nav.pages.PAGES" style="color:#fff !important">Dasboard</span>
                             </a>
                             <ul class="sidebar-nav sidebar-subnav collapse" id="dashboard" style="color:#fff !important">
-                                <li class="sidebar-subnav-header">Dasboard</li>
+                                <li class="sidebar-subnav-header">Dashboard</li>
                                 <li class=" ">
-                                    <a href="/home" title="Dasboard">
-                                        <span data-localize="sidebar.nav.pages.LOGIN">Dasboard</span>
+                                    <a href="{{ url('/home') }}" title="Dashboard">
+                                        <span data-localize="sidebar.nav.pages.LOGIN">Dashboard</span>
                                     </a>
                                 </li>
                                 @can('user-create')
                                 <li class=" ">
-                                    <a href="/newuser" title="Dasboard">
-                                        <span data-localize="sidebar.nav.pages.LOGIN">New user</span>
+                                    <a href="{{ route('users.create') }}" title="New User">
+                                        <span data-localize="sidebar.nav.pages.LOGIN">New User</span>
                                     </a>
                                 </li>
                                 @endcan
                                 @can('user-create')
                                 <li class=" ">
-                                    <a href="/all/user" title="user">
+                                    <a href="{{ route('users.index') }}" title="Users">
                                         <span data-localize="sidebar.nav.pages.LOGIN">Users</span>
                                     </a>
                                 </li>
+                               
+                               
                                 @endcan
-                                @can('departiment-update')
+                                @can('department-update')
                                 <li class=" ">
-                                    <a href="/newdepartment" title="newdepa">
-                                        <span data-localize="sidebar.nav.pages.LOGIN">Users</span>
+                                    <a href="{{ route('departments.create') }}" title="New Department">
+                                        <span data-localize="sidebar.nav.pages.LOGIN">New Department</span>
                                     </a>
                                 </li>
+                              
+
                                 @endcan
                             </ul>
+                            
                         </li>
 
                         {{-- end of the dashord part --}}
-
+                        <li class="">
+                            <a href="#companies" title="Companies" data-toggle="collapse">
+                                <em class="icon-organization" style="color:#fff !important"></em>
+                                <span data-localize="sidebar.nav.pages.COMPANIES" style="color:#fff !important">Companies</span>
+                            </a>
+                            <ul class="sidebar-nav sidebar-subnav collapse" id="companies">
+                                <li class="sidebar-subnav-header">Companies</li>
+                                <li class="">
+                                    <a href="{{ route('companies.index') }}" title="All Companies">
+                                        <span data-localize="sidebar.nav.pages.ALL_COMPANIES">All Companies</span>
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="{{ route('companies.create') }}" title="New Company">
+                                        <span data-localize="sidebar.nav.pages.NEW_COMPANY">New Company</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
                        
                         {{-- doropdown  in to create lore and pamissinon --}}
                         @can('privillage-view')
@@ -343,12 +367,7 @@
                             </ul>
                         </li>
                         
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('billing.index') }}" style="color:#fff !important">
-                                <i class="fas fa-file-invoice"></i>
-                                <span>Billing</span>
-                            </a>
-                        </li>
+                       
                         <li class="">
                             <a href="#indexSales" title="Sales" data-toggle="collapse">
                                 <em class="icon-basket" style="color:#fff !important"></em>
@@ -535,6 +554,7 @@
     <script src="{{ url('assets/admin/js/app.js')}}"></script>
     <script src="{{ url('assets/admin/js/js.js')}}"></script>
     <script src="{{ url('js/select2.js')}}"></script>
+    <script src="{{ url('js/logoview.js')}}"></script>
     <script src="{{ url('js/site-en.json')}}"></script>
     
     <script>

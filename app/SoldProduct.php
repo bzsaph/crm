@@ -14,9 +14,16 @@ class SoldProduct extends Model
         'sale_id',
         'stock_id',
         'quantity',
+        'unit_price',
+        'sold_from',
         'total_price',
-        'invoice_number', // Optional, depending on your requirements
+        'invoice_number', 
+        'loged_in_id',
+        
+      
     ];
+
+   
 
     // Define the relationship with the Sale model
     public function sale() {

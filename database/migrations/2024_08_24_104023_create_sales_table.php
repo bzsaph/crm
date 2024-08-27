@@ -17,6 +17,7 @@ class CreateSalesTable extends Migration
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->string('invoice_number')->unique();
+            $table->integer('sold_from')->constrained('companies')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();
             $table->foreignId('loged_in_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade')->index();
             $table->timestamps();
         });

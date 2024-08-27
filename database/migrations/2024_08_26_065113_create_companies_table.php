@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClientsTable extends Migration
+class CreateCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,16 @@ class CreateClientsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('clients'); // Drop the table if it exists
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->nullable();
-            $table->string('managed_by')->nullable();
-            $table->string('status')->default('1');
-            $table->integer('user_id')->nullable()->index();
-            $table->enum('client_type', ['vendor', 'client'])->nullable();;
+            $table->string('address');
+            $table->string('phone');
+            $table->string('logo')->nullable();
+            $table->string('email');
+            $table->string('website')->nullable();
+            $table->enum('status', ['active', 'closed'])->default('active');
             $table->integer('loged_in_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();
-          
             $table->timestamps();
         });
     }
@@ -36,6 +34,6 @@ class CreateClientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('companies');
     }
 }

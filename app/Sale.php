@@ -14,6 +14,7 @@ class Sale extends Model
         'client_id',
         'invoice_number',
         'loged_in_id',
+        'sold_from',
     ];
 
     // Define the relationship with the Client model

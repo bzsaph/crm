@@ -10,6 +10,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleandPermissionController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\Userscontroller;
+use App\Http\Controllers\CompanyController;
 
 Auth::routes();
 Route::get('/', 'Userscontroller@welcome');
@@ -27,6 +29,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('all/user', [HomeController::class, 'alluser']);
     Route::get('/edituser/{id}', [HomeController::class, 'edituser']);
     Route::any('/admin/updateuser', [HomeController::class, 'updateuser']);
+
+    // Grouping the routes for better organization
+
     
     // Billing
     Route::any('billing/monthly', [BillingController::class, 'createMonthlySubscription'])->name('billing.createMonthly');
@@ -97,6 +102,18 @@ Route::prefix('complaints')->name('complaints.')->group(function () {
     // Route to delete a specific complaint
     Route::delete('/{complaint}', [ComplaintController::class, 'destroy'])->name('destroy');
 });
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index'); // View all companies
+    Route::get('/companies/create', [CompanyController::class, 'create'])->name('companies.create'); // Create new company
+    Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store'); // Store new company
+    Route::get('/companies/{company}/edit', [CompanyController::class, 'edit'])->name('companies.edit'); // Edit company
+    Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update'); // Update company
+    Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('companies.show'); // Show company
+    Route::put('/companies/{company}/status', [CompanyController::class, 'updateStatus'])->name('companies.updateStatus'); // Update company status
+});
+
+
+
 
 
 Route::prefix('sales')->name('sales.')->group(function () {
@@ -109,5 +126,16 @@ Route::prefix('sales')->name('sales.')->group(function () {
     Route::delete('{id}', [SaleController::class, 'destroy'])->name('destroy');
     Route::get('{id}/invoice', [SaleController::class, 'generateInvoice'])->name('invoice');
 });
-
+Route::prefix('admin')->middleware('auth')->group(function () {
+    // Route to display the form to create a new user
+    Route::get('/users/create', [Userscontroller::class, 'create'])->name('users.create');
+    // Route to store a new user
+    Route::post('/users', [Userscontroller::class, 'store'])->name('users.store');
+    // Route to list all users
+    Route::get('/users', [Userscontroller::class, 'index'])->name('users.index');
+    // Route to display the form to edit a user
+    Route::get('/users/{id}/edit', [Userscontroller::class, 'edit'])->name('users.edit');
+    // Route to update a user's information
+    Route::put('/users/{id}', [Userscontroller::class, 'update'])->name('users.update');
+});
 });

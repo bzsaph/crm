@@ -4,20 +4,29 @@ namespace App\Http\Controllers;
 use App\Sale;
 use App\Stock;
 use App\Client;
+use App\Company;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;  // Use this import statement
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 class SaleController extends Controller
 {
     // Display a listing of the sales
     public function index()
     {
-        $sales = \DB::table('sales')
-        ->join('clients', 'sales.client_id', '=', 'clients.id')
-        ->select('sales.id', 'clients.name as client_name')
-        ->get();
-
-        return view('admin.sales.index', compact('sales')); // Pass sales data to the index view
+        $sales = DB::table('sales')
+            ->join('clients', 'sales.client_id', '=', 'clients.id')
+            ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number') // Include 'invoice_number'
+            ->get();
+        
+        // Optionally, if you need the logged-in user's companies, you can still retrieve it
+        $loggedInUserCompanies = Auth::user()->companies;
+        
+        return view('admin.sales.index', compact('sales', 'loggedInUserCompanies'));
     }
+    
 
     // Show the form for creating a new sale
     public function create()
@@ -35,11 +44,11 @@ class SaleController extends Controller
             'client_id' => 'required|exists:clients,id',
             'products.*.stock_id' => 'required|exists:stocks,id',
             'products.*.quantity' => 'required|numeric|min:1',
-            'products.*.total_price' => 'required|numeric|min:0',
+            'products.*.unit_price' => 'required|numeric|min:0', // Validate unit_price
         ]);
     
         // Begin a transaction
-        \DB::beginTransaction();
+        DB::beginTransaction();
     
         try {
             // Generate a unique invoice number
@@ -49,44 +58,53 @@ class SaleController extends Controller
             $sale = new Sale();
             $sale->client_id = $request->client_id;
             $sale->invoice_number = $invoiceNumber;
+            $sale->sold_from = Auth::user()->companies->first()->id ?? null;
+            $sale->loged_in_id = Auth::id(); // Store the ID of the logged-in user
             $sale->save();
     
             foreach ($request->products as $product) {
                 $stock = Stock::find($product['stock_id']);
     
                 if (!$stock) {
-                    \DB::rollBack();
+                    DB::rollBack();
                     return redirect()->back()->withErrors(['error' => "Stock not found for ID: {$product['stock_id']}"]);
                 }
     
                 if ($stock->remaining_stock < $product['quantity']) {
-                    \DB::rollBack();
+                    DB::rollBack();
                     return redirect()->back()->withErrors(['error' => "Not enough stock for product: {$stock->item_name}"]);
                 }
+    
+                $unitPrice = $product['unit_price'];
+                $quantity = $product['quantity'];
+                $totalPrice = $unitPrice * $quantity; // Calculate total price
     
                 $sale->soldProducts()->create([
                     'sale_id' => $sale->id,
                     'stock_id' => $product['stock_id'],
-                    'quantity' => $product['quantity'],
-                    'total_price' => $product['total_price'],
-                    'invoice_number' => $invoiceNumber, // Ensure this is included
-                    ]);
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'total_price' => $totalPrice, // Store calculated total price
+                    'invoice_number' => $invoiceNumber,
+                    'sold_from' => Auth::user()->companies->first()->id ?? null, // Get the first company's ID
+                    'loged_in_id' => Auth::id(), // Store the ID of the logged-in user
+                ]);
     
                 try {
-                    $stock->remaining_stock -= $product['quantity'];
+                    $stock->remaining_stock -= $quantity;
                     $stock->save();
                 } catch (\Exception $e) {
-                    \DB::rollBack();
-                    \Log::error("Error updating stock: " . $e->getMessage());
+                    DB::rollBack();
+                    Log::error("Error updating stock: " . $e->getMessage());
                     return redirect()->back()->withErrors(['error' => 'An error occurred while updating stock.']);
                 }
             }
     
-            \DB::commit();
+            DB::commit();
             return redirect()->route('sales.index')->with('success', 'Sale recorded successfully! Invoice Number: ' . $invoiceNumber);
         } catch (\Exception $e) {
-            \DB::rollBack();
-            \Log::error("Error recording sale: " . $e->getMessage());
+            DB::rollBack();
+            Log::error("Error recording sale: " . $e->getMessage());
             return redirect()->back()->withErrors(['error' => 'An error occurred while recording the sale.']);
         }
     }
@@ -134,7 +152,7 @@ class SaleController extends Controller
     public function destroy($id)
     {
         $sale = Sale::findOrFail($id);
-        $sale->delete();
+        // $sale->delete();
 
         return redirect()->route('sales.index')->with('success', 'Sale deleted successfully.');
     }
@@ -142,25 +160,29 @@ class SaleController extends Controller
     // Generate an invoice for the specified sale
     public function generateInvoice($id)
     {
-        $sale = Sale::findOrFail($id);
-
+   
+        $sale = Sale::with(['products.stock', 'client'])->findOrFail($id);
+    
+        $company = Company::find($sale->sold_from); // Retrieve the company based on the sold_from field
+    
         // Define the file name and path
         $invoiceFile = 'invoice-' . $sale->id . '.pdf';
         $invoicePath = storage_path('app/invoices/' . $invoiceFile);
-
+    
         // Generate the PDF
-        $pdf = PDF::loadView('admin.invoices.productinvoice', ['sale' => $sale]);
-
+        $pdf = PDF::loadView('admin.invoices.productinvoice', ['sale' => $sale, 'company' => $company]);
+    
         // Save the PDF to the specified path
         $pdf->save($invoicePath);
-
+    
         // Check if file is saved correctly
         if (!file_exists($invoicePath)) {
             return response()->json(['error' => 'Invoice file not found.'], 404);
         }
-
+    
         return response()->download($invoicePath);
     }
+    
     
 
 }

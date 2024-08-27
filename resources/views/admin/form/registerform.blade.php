@@ -1,95 +1,99 @@
-@csrf
+@extends('layouts.adminapp')
 
-<div class="form-group row">
-    <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-    <div class="col-md-6">
-        <input type="hidden" name="id" value="{{ old('id') }}@isset($user) {{$user->id}}@endisset">
-        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}@isset($user) {{$user->name}}@endisset"
+@section('content')
+<div class="container">
+    <h1>Edit User</h1>
+    
+    <form action="{{ route('users.update', $user->id) }}" method="POST">
+        @csrf
+        @method('PUT')
 
-         required autocomplete="name" autofocus>
+        <!-- Name -->
+        <div class="form-group row">
+            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+            <div class="col-md-6">
+                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $user->name) }}" required autocomplete="name" autofocus>
+                @error('name')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
 
-        @error('name')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
+        <!-- Email -->
+        <div class="form-group row">
+            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+            <div class="col-md-6">
+                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', $user->email) }}" required autocomplete="email">
+                @error('email')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        <!-- Grade -->
+        <div class="form-group row">
+            <label for="grade" class="col-md-4 col-form-label text-md-right">{{ __('Grade') }}</label>
+            <div class="col-md-6">
+                <select id="grade" class="form-control @error('grade') is-invalid @enderror" name="grade" required>
+                    <option value="0" disabled>Choose</option>
+                    <option value="0" {{ $user->grade == '0' ? 'selected' : '' }}>Student</option>
+                    <option value="1" {{ $user->grade == '1' ? 'selected' : '' }}>Supervisor</option>
+                </select>
+                @error('grade')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        <!-- Companies -->
+        <div class="form-group row">
+            <label for="company_id" class="col-md-4 col-form-label text-md-right">{{ __('Company') }}</label>
+            <div class="col-md-6">
+                <select id="company_id" class="form-control @error('company_id') is-invalid @enderror" name="company_id[]" multiple required>
+                    @foreach($companies as $company)
+                        {{-- <option value="{{ $company->id }}" {{ in_array($company->id, $userCompanies) ? 'selected' : '' }}>
+                            {{ $company->name }}
+                        </option> --}}
+                    @endforeach
+                </select>
+                @error('company_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        <!-- Roles -->
+        <div class="form-group row">
+            <label class="col-md-4 col-form-label text-md-right">{{ __('Roles') }}</label>
+            <div class="col-md-6">
+
+                @foreach ($roles as $role)
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" value="{{ $role->id }}" name="roles[]" id="role-{{ $role->id }}"
+                        {{ in_array($role->id, $user->roles->pluck('id')->toArray()) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="role-{{ $role->id }}">{{ $role->name }}</label>
+                    </div>
+                @endforeach
+               
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group row mb-0">
+            <div class="col-md-6 offset-md-4">
+                <button type="submit" class="btn btn-primary">
+                    {{ __('Save Changes') }}
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
-
-<div class="form-group row">
-    <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-    <div class="col-md-6">
-        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}@isset($user) {{$user->email}}@endisset" required autocomplete="email">
-
-        @error('email')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-</div>
-
-<div class="form-group row">
-    <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Grade ') }}</label>
-
-    <div class="col-md-6">
-    <select class="form-control @error('grade') is-invalid @enderror" value="{{ old('grade') }}@isset($user) {{$user->grade}}@endisset" name="grade" required autocomplete="grade" >
-        <option value="0" disabled selected>choose</option>
-        @if($user->grade =="0")
-            <option value="0" class="bg-success" selected>Students </option>
-             <option value="1"  >Supervisor </option>
-        @else
-        <option value="1" class="bg-success"  selected>Supervisor </option>
-        <option value="0" >Students </option>
-        @endif
-    </select>
-
-        @error('grade')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-</div>
-@isset($create)
-<div class="form-group row">
-    <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-    <div class="col-md-6">
-        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-        @error('password')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-</div>
-@endisset
-
-
-<div class="form-group row">
-
-    @foreach ($roles as $role)
-    <div class="col-md-12" style="margin-left: 60px ">
-        <input type="checkbox" value="{{$role->id}}" name="roles[]"
-        @if(auth()->check())
-             @foreach($roless as $userRole)
-                 @if($userRole->id==$role->id) {{"checked"}}
-                 @endif
-             @endforeach
-       @endif> {{$role->name}}
-
-    </div>
-    @endforeach
-
-</div>
-
-<div class="form-group row mb-0">
-    <div class="col-md-6 offset-md-4">
-        <button type="submit" class="btn btn-primary">
-            {{ __('Register') }}
-        </button>
-    </div>
-</div>
+@endsection

@@ -1,52 +1,132 @@
 @extends('layouts.adminapp')
 
 @section('content')
-<div class="container">
-    <h1>Edit Sale</h1>
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Sale</h2>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+    <!-- Display validation errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
     <form action="{{ route('sales.update', $sale->id) }}" method="POST">
         @csrf
         @method('PUT')
-
-        <div class="form-group">
-            <label for="client_id">Client</label>
-            <select id="client_id" name="client_id" class="form-control" required>
+        
+        <div class="mb-4">
+            <label for="client_id" class="form-label">Client</label>
+            <select name="client_id" id="client_id" class="form-select" required>
+                <option value="">Select a client</option>
                 @foreach($clients as $client)
-                    <option value="{{ $client->id }}" {{ $sale->client_id == $client->id ? 'selected' : '' }}>
-                        {{ $client->name }}
-                    </option>
+                    <option value="{{ $client->id }}" {{ $sale->client_id == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="stock_id">Stock</label>
-            <select id="stock_id" name="stock_id" class="form-control" required>
-                @foreach($stocks as $stock)
-                    <option value="{{ $stock->id }}" {{ $sale->stock_id == $stock->id ? 'selected' : '' }}>
-                        {{ $stock->item_name }}
-                    </option>
-                @endforeach
-            </select>
+        <div id="products-container">
+            @foreach($sale->soldProducts as $index => $product)
+                <div class="product mb-4 border p-3 rounded">
+                    <h5 class="mb-3">Product Details</h5>
+                    <div class="mb-3">
+                        <label for="stock_id" class="form-label">Product</label>
+                        <select name="products[{{ $index }}][stock_id]" class="form-select stock_id" required>
+                            <option value="">Select a product</option>
+                            @foreach($stocks as $stock)
+                                <option value="{{ $stock->id }}" {{ $product->stock_id == $stock->id ? 'selected' : '' }}>{{ $stock->item_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" name="products[{{ $index }}][quantity]" class="form-control quantity" value="{{ $product->quantity }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="unit_price" class="form-label">Unit Price</label>
+                        <input type="number" name="products[{{ $index }}][unit_price]" class="form-control unit_price" step="0.01" value="{{ $product->unit_price }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="total_price" class="form-label">Total Price</label>
+                        <input type="number" name="products[{{ $index }}][total_price]" class="form-control total_price" step="0.01" value="{{ $product->total_price }}" readonly>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
-        <div class="form-group">
-            <label for="quantity">Quantity</label>
-            <input type="number" id="quantity" name="quantity" class="form-control" value="{{ $sale->quantity }}" required>
-        </div>
-
-        <div class="form-group">
-            <label for="total_price">Total Price</label>
-            <input type="number" id="total_price" name="total_price" class="form-control" value="{{ $sale->total_price }}" step="0.01" required>
-        </div>
-
+        <button type="button" id="add-product" class="btn btn-secondary mb-3">Add Another Product</button>
         <button type="submit" class="btn btn-primary">Update Sale</button>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateTotalPrice() {
+            document.querySelectorAll('.product').forEach(function(productDiv) {
+                const quantityInput = productDiv.querySelector('.quantity');
+                const unitPriceInput = productDiv.querySelector('.unit_price');
+                const totalPriceInput = productDiv.querySelector('.total_price');
+                
+                quantityInput.addEventListener('input', function() {
+                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+                    totalPriceInput.value = (quantity * unitPrice).toFixed(2);
+                });
+
+                unitPriceInput.addEventListener('input', function() {
+                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+                    totalPriceInput.value = (quantity * unitPrice).toFixed(2);
+                });
+            });
+        }
+
+        document.getElementById('add-product').addEventListener('click', function() {
+            var container = document.getElementById('products-container');
+            var index = container.getElementsByClassName('product').length;
+
+            var newProductHtml = `
+                <div class="product mb-4 border p-3 rounded">
+                    <h5 class="mb-3">Product Details</h5>
+                    <div class="mb-3">
+                        <label for="stock_id" class="form-label">Product</label>
+                        <select name="products[${index}][stock_id]" class="form-select stock_id" required>
+                            <option value="">Select a product</option>
+                            @foreach($stocks as $stock)
+                                <option value="{{ $stock->id }}">{{ $stock->item_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" name="products[${index}][quantity]" class="form-control quantity" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="unit_price" class="form-label">Unit Price</label>
+                        <input type="number" name="products[${index}][unit_price]" class="form-control unit_price" step="0.01" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="total_price" class="form-label">Total Price</label>
+                        <input type="number" name="products[${index}][total_price]" class="form-control total_price" step="0.01" readonly>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', newProductHtml);
+            updateTotalPrice();
+        });
+
+        updateTotalPrice();
+    });
+</script>
 @endsection

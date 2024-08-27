@@ -1,47 +1,51 @@
 @extends('layouts.adminapp')
 
 @section('content')
-<div class="container">
-    <h1>Sales</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Sales List</h1>
 
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success mb-4">
             {{ session('success') }}
         </div>
     @endif
 
-    <a href="{{ route('sales.create') }}" class="btn btn-primary">Add New Sale</a>
+    <div class="mb-4">
+        <a href="{{ route('sales.create') }}" class="btn btn-primary">Add New Sale</a>
+    </div>
 
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Client</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($sales as $sale)
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>{{ $sale->id }}</td>
-                    <td>{{ $sale->client_name }}</td> <!-- Display client name -->
-                    <td>
-                        <a href="{{ route('sales.show', $sale->id) }}" class="btn btn-info btn-sm">View</a>
-                        <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('sales.destroy', $sale->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                        <a href="{{ route('sales.invoice', $sale->id) }}" class="btn btn-success btn-sm">Invoice</a>
-                    </td>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Invoice Number</th>
+                    <th>Date</th>
+                    <th>Actions</th>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="3">No sales records found.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($sales as $sale)
+                    <tr>
+                        <td>{{ $sale->id }}</td>
+                        <td>{{ $sale->client_name }}</td>
+                        <td>{{ $sale->invoice_number ?? 'N/A' }}</td> <!-- Handle missing invoice_number -->
+                        <td>{{ \Carbon\Carbon::now()->format('d/m/Y') }}</td> <!-- Replace with actual sale date if available -->
+                        <td>
+                            <a href="{{ route('sales.show', $sale->id) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                           
+                            <a href="{{ route('sales.invoice', $sale->id) }}" class="btn btn-success btn-sm">Invoice</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">No sales records found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection
