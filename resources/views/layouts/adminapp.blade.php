@@ -8,45 +8,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="Bazimya saphani">
     <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/product/logo.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('public/assets/product/logo.png') }}">
     <title>Internshep and Project management </title>
 
     @yield('title')
 
     <!-- =============== VENDOR STYLES ===============-->
     <!-- FONT AWESOME-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fa-brands.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fa-regular.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fa-brands.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fa-regular.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fa-solid.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/@fortawesome/fontawesome-free-webfonts/css/fontawesome.css')}}">
     <!-- SIMPLE LINE ICONS-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/simple-line-icons/css/simple-line-icons.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/simple-line-icons/css/simple-line-icons.css')}}">
     <!-- ANIMATE.CSS-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/animate.css/animate.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/animate.css/animate.css')}}">
     <!-- WHIRL (spinners)-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/whirl/dist/whirl.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/whirl/dist/whirl.css')}}">
     <!-- =============== PAGE VENDOR STYLES ===============-->
     <!-- WEATHER ICONS-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/weather-icons/css/weather-icons.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/weather-icons/css/weather-icons.css')}}">
     <!-- =============== BOOTSTRAP STYLES ===============-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/bootstrap.css')}}" id="bscss">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/css/bootstrap.css')}}" id="bscss">
 
     <link rel="stylesheet" href="{{ asset('css/select2.css')}}" >
 
     <!-- Datatables-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/datatables.net-bs4/css/dataTables.bootstrap4.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/datatables.net-keytable-bs/css/keyTable.bootstrap.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/datatables.net-responsive-bs/css/responsive.bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/datatables.net-bs4/css/dataTables.bootstrap4.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/datatables.net-keytable-bs/css/keyTable.bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/datatables.net-responsive-bs/css/responsive.bootstrap.css')}}">
     <!-- =============== BOOTSTRAP STYLES ===============-->
     <!-- Dropzone-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/dropzone/dist/basic.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/admin/vendor/dropzone/dist/dropzone.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/dropzone/dist/basic.css')}}">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/vendor/dropzone/dist/dropzone.css')}}">
 
     <!-- =============== APP STYLES ===============-->
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/app.css')}}" id="maincss">
-    <link rel="stylesheet" href="{{ asset('assets/admin/css/alertbuton.css')}}" id="maincss">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/css/app.css')}}" id="maincss">
+    <link rel="stylesheet" href="{{ asset('public/assets/admin/css/alertbuton.css')}}" id="maincss">
 
-    {{-- <link rel="stylesheet" href="{{ asset('assets/admin/css/summernote.css')}}" id="maincss"> --}}
+    {{-- <link rel="stylesheet" href="{{ asset('public/assets/admin/css/summernote.css')}}" id="maincss"> --}}
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style type="text/css">
@@ -82,10 +82,10 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#/">
                         <div class="brand-logo">
-                            <img class="img-fluid" src="{{ asset('assets/product/logobg.png') }}" alt="App Logo">
+                            <img class="img-fluid" src="{{ asset('public/assets/product/logobg.png') }}" alt="App Logo">
                         </div>
                         <div class="brand-logo-collapsed">
-                            <img class="img-fluid" src="{{ asset('assets/product/logobg.png') }}" alt="App Logo">
+                            <img class="img-fluid" src="{{ asset('public/assets/product/logobg.png') }}" alt="App Logo">
                         </div>
                     </a>
                 </div>
@@ -491,68 +491,68 @@
     </div>
     <!-- =============== VENDOR SCRIPTS ===============-->
     <!-- MODERNIZR-->
-    <script src="{{ asset('assets/admin/vendor/modernizr/modernizr.custom.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/modernizr/modernizr.custom.js')}}"></script>
     <!-- JQUERY-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{-- <script src="{{ asset('assets/admin/vendor/jquery/dist/jquery.js')}}"></script> --}}
+    {{-- <script src="{{ asset('public/assets/admin/vendor/jquery/dist/jquery.js')}}"></script> --}}
     <!-- BOOTSTRAP-->
-    <script src="{{ asset('assets/admin/vendor/popper.js/dist/umd/popper.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/bootstrap/dist/js/bootstrap.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/popper.js/dist/umd/popper.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/bootstrap/dist/js/bootstrap.js')}}"></script>
     <!-- CHART.JS-->
-    <script src="{{ asset('assets/admin/vendor/chart.js/dist/Chart.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/chart.js/dist/Chart.js')}}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-    {{-- <script src="{{ asset('assets/admin/js/summernote.js')}}"></script> --}}
+    {{-- <script src="{{ asset('public/assets/admin/js/summernote.js')}}"></script> --}}
 
 
     <!-- STORAGE API-->
-    <script src="{{ asset('assets/admin/vendor/js-storage/js.storage.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/js-storage/js.storage.js')}}"></script>
     <!-- JQUERY EASING-->
-    <script src="{{ asset('assets/admin/vendor/jquery.easing/jquery.easing.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jquery.easing/jquery.easing.js')}}"></script>
     <!-- ANIMO-->
-    <script src="{{ asset('assets/admin/vendor/animo/animo.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/animo/animo.js')}}"></script>
     <!-- SCREENFULL-->
-    <script src="{{ asset('assets/admin/vendor/screenfull/dist/screenfull.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/screenfull/dist/screenfull.js')}}"></script>
     <!-- LOCALIZE-->
-    <script src="{{ asset('assets/admin/vendor/jquery-localize/dist/jquery.localize.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jquery-localize/dist/jquery.localize.js')}}"></script>
     <!-- =============== PAGE VENDOR SCRIPTS ===============-->
     <!-- SLIMSCROLL-->
-    <script src="{{ asset('assets/admin/vendor/jquery-slimscroll/jquery.slimscroll.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jquery-slimscroll/jquery.slimscroll.js')}}"></script>
     <!-- SPARKLINE-->
-    <script src="{{ asset('assets/admin/vendor/jquery-sparkline/jquery.sparkline.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jquery-sparkline/jquery.sparkline.js')}}"></script>
     <!-- FLOT CHART-->
-    <script src="{{ asset('assets/admin/vendor/flot/jquery.flot.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/jquery.flot.tooltip/js/jquery.flot.tooltip.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/flot/jquery.flot.resize.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/flot/jquery.flot.pie.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/flot/jquery.flot.time.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/flot/jquery.flot.categories.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/jquery.flot.spline/jquery.flot.spline.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/flot/jquery.flot.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jquery.flot.tooltip/js/jquery.flot.tooltip.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/flot/jquery.flot.resize.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/flot/jquery.flot.pie.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/flot/jquery.flot.time.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/flot/jquery.flot.categories.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jquery.flot.spline/jquery.flot.spline.js')}}"></script>
     <!-- EASY PIE CHART-->
-    <script src="{{ asset('assets/admin/vendor/easy-pie-chart/dist/jquery.easypiechart.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/easy-pie-chart/dist/jquery.easypiechart.js')}}"></script>
 
     <!-- Datatables-->
-    <script src="{{ asset('assets/admin/vendor/datatables.net/js/jquery.dataTables.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-bs4/js/dataTables.bootstrap4.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-buttons/js/dataTables.buttons.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-buttons-bs/js/buttons.bootstrap.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-buttons/js/buttons.colVis.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-buttons/js/buttons.flash.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-buttons/js/buttons.html5.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-buttons/js/buttons.print.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-keytable/js/dataTables.keyTable.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-responsive/js/dataTables.responsive.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/jszip/dist/jszip.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/pdfmake/build/pdfmake.js')}}"></script>
-    <script src="{{ asset('assets/admin/vendor/pdfmake/build/vfs_fonts.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net/js/jquery.dataTables.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-bs4/js/dataTables.bootstrap4.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-buttons/js/dataTables.buttons.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-buttons-bs/js/buttons.bootstrap.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-buttons/js/buttons.colVis.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-buttons/js/buttons.flash.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-buttons/js/buttons.html5.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-buttons/js/buttons.print.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-keytable/js/dataTables.keyTable.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-responsive/js/dataTables.responsive.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/jszip/dist/jszip.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/pdfmake/build/pdfmake.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/pdfmake/build/vfs_fonts.js')}}"></script>
 
     <!-- =============== APP SCRIPTS ===============-->
     <!-- MOMENT JS-->
-    <script src="{{ asset('assets/admin/vendor/moment/min/moment-with-locales.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/vendor/moment/min/moment-with-locales.js')}}"></script>
     <!-- =============== APP SCRIPTS ===============-->
-    <script src="{{ asset('assets/admin/js/app.js')}}"></script>
-    <script src="{{ asset('assets/admin/js/js.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/js/app.js')}}"></script>
+    <script src="{{ asset('public/assets/admin/js/js.js')}}"></script>
     <script src="{{ asset('js/select2.js')}}"></script>
     <script src="{{ asset('js/logoview.js')}}"></script>
     <script src="{{ asset('js/site-en.json')}}"></script>
