@@ -17,7 +17,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #007BFF; /* Header background color */
+           
         }
         .header img {
             height: 50px;
@@ -125,8 +125,8 @@
         <p>Company Name: {{ $company->name ?? 'Company Name' }}</p>
         <p>Address: {{ $company->address ?? 'Company Address' }}</p>
         <p>Phone: {{ $company->phone ?? 'Company Phone' }}</p>
-        <p>TIN: {{ $company->tin ?? '..............' }}</p>
-        <p>Contact Email: {{ $company->contact_email ?? '...........' }}</p>
+        <p>TIN: {{ $company->tinnumber ?? '..............' }}</p>
+        <p>Contact Email: {{ $company->email ?? '...........' }}</p>
     </div>
 
     <div class="services">
@@ -134,7 +134,7 @@
         <p>Company Name: {{ $sale->client->name ?? '..........' }}</p>
         <p>Address: {{ $sale->client->address ?? 'Client Address' }}</p>
         <p>Phone: {{ $sale->client->phone ?? '............' }}</p>
-        <p>TIN: {{ $sale->client->tin ?? '........' }}</p>
+        <p>TIN: {{ $sale->client->tinnumber ?? '........' }}</p>
         <p>Contact Email: {{ $sale->client->email ?? '...........' }}</p>
     </div>
     
@@ -180,16 +180,15 @@
     
     <div>
         <p>Payment Method: Bank transfer or check</p>
-        Make all checks payable to: <br>
-        Name:..............<br>
-        Bank Name:................<br>
-        Bank Account:.............. <br>
-        Note:  TAX EXCLUSIVE
+        Name:<p>{{ $company->acowner }}</p><br>
+        Bank Name:<p>{{ $company->bkname }}</p><br>
+        Bank Account:<p>{{ $company->bkaccount }}</p><br>
+        Note:<p>{{ $company->notes }}</p>
   
     </div>
 
     <div class="footer">
-        <p>Company Name: {{ $company->name ?? 'Company Name' }}</p> <br>
+        <p>Company Name: {{ $company->name ?? 'Company Name' }}</p>  <p>Company Name: {{ $company->address ?? 'Company address' }}</p><br>
       
     </div>
 </body>

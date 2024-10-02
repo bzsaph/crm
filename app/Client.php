@@ -11,8 +11,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    protected $fillable = ['name', 'email', 'phone'];
-
+    protected $fillable = [
+    'name' ,
+    'email' ,
+    'phone',
+    'managed_by',
+    'status',
+    'client_type', // Validate client_type
+    'tinnumber', // Validate client_type
+    'address', // Validate client_type
+];
     public function billings()
     {
         

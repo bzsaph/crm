@@ -18,7 +18,15 @@
             <label for="email">Email</label>
             <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required>
         </div>
-
+        <div class="form-group">
+            <label for="name">Tin Number</label>
+            <input type="text" id="tinnumber" name="tinnumber" class="form-control" value="{{ old('tinnumber') }}" required>
+        </div>
+       
+        <div class="form-group">
+            <label for="name">Address</label>
+            <input type="text" id="address" name="address" class="form-control" value="{{ old('address') }}" required>
+        </div>
         <!-- Phone -->
         <div class="form-group">
             <label for="phone">Phone</label>

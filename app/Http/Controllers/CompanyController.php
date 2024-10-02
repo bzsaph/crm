@@ -34,8 +34,13 @@ class CompanyController extends Controller
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
             'website' => 'nullable|string|max:255',
+            'tinnumber' => 'required',
             'status' => 'required|in:active,closed',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:8048',
+            'notes'=> 'required',
+            'acowner'=> 'required',
+            'bkaccount'=> 'required',
+            'bkname'=> 'required',
         ]);
     
         try {
@@ -100,7 +105,12 @@ class CompanyController extends Controller
         'email' => 'required|email|max:255',
         'website' => 'nullable|string|max:255',
         'status' => 'required|in:active,closed',
+        'tinnumber'=> 'required',
         'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'notes'=> 'required',
+        'acowner'=> 'required',
+        'bkaccount'=> 'required',
+        'bkname'=> 'required',
     ]);
      // Check if a new logo is uploaded
      if ($request->hasFile('logo')) {

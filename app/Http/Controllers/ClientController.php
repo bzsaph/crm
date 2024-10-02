@@ -36,6 +36,10 @@ class ClientController extends Controller
             'managed_by' => 'nullable|string|max:255',
             'status' => 'required|boolean',
             'client_type' => 'required|in:vendor,client', // Validate client_type
+            'tinnumber' => 'required|string|max:255', // Validate client_type
+            'address' => 'required|string|max:255', // Validate client_type
+            
+            
         ]);
 
         // Add the authenticated user as the logged_in_id
