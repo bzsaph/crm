@@ -73,7 +73,8 @@
                             </div>
                             <div class="col-md-3">
                                 @if($company->logo)
-                                <img id="logoPreview" src="{{ asset('storage/logos/' . $company->logo) }}" alt="Company Logo" style="width: 100px; height: auto;">
+
+                                <img id="logoPreview" src="{{ asset('public/logos/' . $company->logo) }}" alt="Company Logo" style="width: 100px; height: auto;">
                             @else
                             <div class="text-center">
                                 <img src="#" id="logoPreview" class="rounded" alt="Image Preview" style="width: 100px; height: auto; display: none;">

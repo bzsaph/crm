@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 class CompanyController extends Controller
 {
     public function create()
@@ -23,6 +24,7 @@ class CompanyController extends Controller
         return view('admin.companies.edit', compact('company'));
     }
 
+    
     public function update(Request $request, Company $company)
     {
         // Define validation rules
@@ -33,33 +35,47 @@ class CompanyController extends Controller
             'email' => 'required|email|max:255',
             'website' => 'nullable|string|max:255',
             'status' => 'required|in:active,closed',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:8048',
         ]);
-
-        // Handle logo file
-        if ($request->hasFile('logo')) {
-            // If there is an existing logo, delete it
-            if ($company->logo) {
-                $existingLogoPath = public_path('storage/logos/' . $company->logo);
-                if (file_exists($existingLogoPath)) {
-                    unlink($existingLogoPath);
+    
+        try {
+            // Handle logo file
+            if ($request->hasFile('logo')) {
+                // Ensure public/logos directory exists, and create if not
+                $logosPath = public_path('logos');
+                if (!File::exists($logosPath)) {
+                    File::makeDirectory($logosPath, 0755, true); // Create with permissions if not exists
                 }
+    
+                // If there is an existing logo, delete it
+                if ($company->logo && File::exists(public_path('logos/' . $company->logo))) {
+                    File::delete(public_path('logos/' . $company->logo));
+                }
+    
+                // Store the new logo file directly in the 'public/logos' directory
+                $file = $request->file('logo');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('logos'), $filename); // Directly move to public/logos
+    
+                // Add the new logo filename to the validated data
+                $validatedData['logo'] = $filename;
             }
-
-            // Store the new logo file
-            $file = $request->file('logo');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/logos', $filename); // Store the file in the public/logos directory
-
-            // Add the new logo filename to the validated data
-            $validatedData['logo'] = $filename;
+    
+            // Update the company with validated data
+            $company->update($validatedData);
+    
+            return redirect()->route('companies.index')->with('success', 'Company updated successfully!');
+    
+        } catch (\Exception $e) {
+            // Log the error for debugging purposes
+            Log::error('Error updating company: ' . $e->getMessage());
+    
+            // Redirect back with an error message
+            return redirect()->back()->with('error', 'An error occurred while updating the company. Please try again.');
         }
-
-        // Update the company with validated data
-        $company->update($validatedData);
-
-        return redirect()->route('companies.index')->with('success', 'Company updated successfully!');
     }
+    
+
 
     
     
