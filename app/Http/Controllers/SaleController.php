@@ -17,15 +17,24 @@ class SaleController extends Controller
     // Display a listing of the sales
     public function index()
     {
-        $sales = DB::table('sales')
-            ->join('clients', 'sales.client_id', '=', 'clients.id')
-            ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number','sales.invoicedate') // Include 'invoice_number'
-            ->get();
+ // Get the logged-in user
+                $user = Auth::user();
+                $loggedInUserCompanies = Auth::user()->companies->first()->id;
+              
+
+                // Fetch sales data for the logged-in user's company
+                $sales = DB::table('sales')
+                    ->join('clients', 'sales.client_id', '=', 'clients.id')
+                    ->join('companies', 'sales.sold_from', '=', 'companies.id') // Join with the companies table
+                    ->where('sales.sold_from',$loggedInUserCompanies) // Filter sales based on the company of the logged-in user
+                    ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number', 'sales.invoicedate')
+                    ->get();
+
+   
         
          
         // Optionally, if you need the logged-in user's companies, you can still retrieve it
-        $loggedInUserCompanies = Auth::user()->companies;
-        
+
         return view('admin.sales.index', compact('sales', 'loggedInUserCompanies'));
     }
     
