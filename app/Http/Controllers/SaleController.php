@@ -21,7 +21,7 @@ class SaleController extends Controller
             ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number','sales.invoicedate') // Include 'invoice_number'
             ->get();
         
-            dd($sales);
+         
         // Optionally, if you need the logged-in user's companies, you can still retrieve it
         $loggedInUserCompanies = Auth::user()->companies;
         
