@@ -66,7 +66,62 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-md-4 col-form-label text-md-right">Tin Number</label>
+                        <div class="col-md-6">
+                            <input id="tinnumber" type="number" class="form-control @error('tinnumber') is-invalid @enderror" name="tinnumber" value="{{ old('tinnumber') }}">
+                            @error('tinnumber')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
 
+                    <div class="form-group row">
+                        <label for="email" class="col-md-4 col-form-label text-md-right">Bank name</label>
+                        <div class="col-md-6">
+                            <input id="bkname" type="text" class="form-control @error('bkname') is-invalid @enderror" name="bkname" value="{{ old('bkname') }}">
+                            @error('bkname')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-md-4 col-form-label text-md-right">Bank Account</label>
+                        <div class="col-md-6">
+                            <input id="bkaccount" type="number" class="form-control @error('bkaccount') is-invalid @enderror" name="bkaccount" value="{{ old('bkaccount') }}">
+                            @error('bkaccount')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-md-4 col-form-label text-md-right">Account account owner</label>
+                        <div class="col-md-6">
+                            <input id="acowner" type="text" class="form-control @error('acowner') is-invalid @enderror" name="acowner" value="{{ old('acowner') }}">
+                            @error('acowner')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-md-4 col-form-label text-md-right">Notes</label>
+                        <div class="col-md-6">
+                            <input id="notes" type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" value="{{ old('notes') }}">
+                            @error('notes')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
                     <!-- Website -->
                     <div class="form-group row">
                         <label for="website" class="col-md-4 col-form-label text-md-right">Website</label>

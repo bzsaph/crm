@@ -21,7 +21,7 @@
                     <th>ID</th>
                     <th>Client</th>
                     <th>Invoice Number</th>
-                    <th>Date</th>
+                    <th>Date Of invoice </th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -31,7 +31,7 @@
                         <td>{{ $sale->id }}</td>
                         <td>{{ $sale->client_name }}</td>
                         <td>{{ $sale->invoice_number ?? 'N/A' }}</td> <!-- Handle missing invoice_number -->
-                        <td>{{ \Carbon\Carbon::now()->format('d/m/Y') }}</td> <!-- Replace with actual sale date if available -->
+                        <td>{{ \Carbon\Carbon::parse($sale->invoicedate)->format('F d, Y') }}</td> <!-- Replace with actual sale date if available -->
                         <td>
                             <a href="{{ route('sales.show', $sale->id) }}" class="btn btn-info btn-sm">View</a>
                             <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-warning btn-sm">Edit</a>

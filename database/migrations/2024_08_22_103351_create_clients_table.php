@@ -21,6 +21,8 @@ class CreateClientsTable extends Migration
             $table->string('phone')->nullable();
             $table->string('managed_by')->nullable();
             $table->string('status')->default('1');
+            $table->string('address');
+            $table->string('tinnumber')->nullable();
             $table->integer('user_id')->nullable()->index();
             $table->enum('client_type', ['vendor', 'client'])->nullable();;
             $table->integer('loged_in_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();

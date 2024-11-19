@@ -53,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
     Route::put('clients/{client}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    Route::get('/clients/search', [ClientController::class, 'search'])->name('clients.search');
+
 
     // Reports (Manual Routes)
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');

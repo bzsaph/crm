@@ -38,7 +38,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <!-- Custom JS -->
-    <script src="{{ url('assets/welcome/js/script.js') }}"></script>
+    <script src="{{ asset('assets/welcome/js/script.js') }}"></script>
 
 </head>
 

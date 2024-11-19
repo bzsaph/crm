@@ -19,3 +19,9 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-SSL} !on
+RewriteCond %{HTTP_HOST} ^pos\.yanjye\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.pos\.yanjye\.com$
+RewriteRule ^(.*)$ "https\:\/\/pos\.yanjye\.com\/$1" [R=301,L]
+
