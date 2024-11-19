@@ -5,6 +5,7 @@ use App\Sale;
 use App\Stock;
 use App\Client;
 use App\Company;
+use App\SoldProduct;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;  // Use this import statement
 use Illuminate\Support\Facades\Auth;
@@ -154,33 +155,76 @@ class SaleController extends Controller
     }
 
     // Update the specified sale in storage
-    public function update(Request $request, $id)
+    public function update(Request $request, $saleId)
     {
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'stock_id' => 'required|exists:stocks,id',
-            'quantity' => 'required|integer|min:1',
-            'total_price' => 'required|numeric'
+            'products' => 'required|array',
+            'products.*.id' => 'nullable|exists:sold_products,id', // Existing product ID
+            'products.*.stock_id' => 'required|exists:stocks,id', // Stock ID
+            'products.*.quantity' => 'required|numeric|min:1',    // Quantity
+            'products.*.unit_price' => 'required|numeric|min:0', // Unit price
         ]);
-
-        $sale = Sale::findOrFail($id);
-        $sale->update($request->all());
-
-        $stock = Stock::findOrFail($request->stock_id);
-        $stock->remaining_stock -= $request->quantity;
-        $stock->save();
-
-        return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
+    
+        DB::beginTransaction();
+    
+        try {
+            foreach ($request->products as $productData) {
+                $soldProduct = SoldProduct::find($productData['id']);
+    
+                // Ensure the record exists (skip if null for new products)
+                if ($soldProduct) {
+                    $stock = Stock::findOrFail($productData['stock_id']);
+    
+                    // If the quantity has changed, restore the old quantity and apply the new one
+                    if ($productData['quantity'] != $soldProduct->quantity) {
+                        // Restore stock for the old quantity
+                        $stock->remaining_stock += $soldProduct->quantity;
+                        $stock->quantity += $soldProduct->quantity;
+    
+                        // If the quantity is increased, ensure there is enough stock
+                        if ($productData['quantity'] > $soldProduct->quantity) {
+                            $stock->remaining_stock -= ($productData['quantity'] - $soldProduct->quantity);
+                            $stock->quantity -= ($productData['quantity'] - $soldProduct->quantity);
+                        } else { // If the quantity decreased, restore the stock
+                            $stock->remaining_stock -= ($soldProduct->quantity - $productData['quantity']);
+                            $stock->quantity -= ($soldProduct->quantity - $productData['quantity']);
+                        }
+    
+                        // Check if the new quantity is valid (i.e., no negative stock)
+                        if ($stock->remaining_stock < 0) {
+                            throw new \Exception("Insufficient stock for {$stock->item_name}");
+                        }
+    
+                        // Update the sold product
+                        $soldProduct->update([
+                            'stock_id' => $productData['stock_id'],
+                            'quantity' => $productData['quantity'],
+                            'unit_price' => $productData['unit_price'],
+                            'total_price' => $productData['quantity'] * $productData['unit_price'],
+                        ]);
+                    }
+    
+                    // Save the updated stock data
+                    $stock->save();
+                }
+            }
+    
+            DB::commit();
+            return redirect()->route('sales.index')->with('success', 'Sale updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
+        }
     }
+    
+    
+
+    
+    
+
 
     // Remove the specified sale from storage
-    public function destroy($id)
-    {
-        $sale = Sale::findOrFail($id);
-        // $sale->delete();
-
-        return redirect()->route('sales.index')->with('success', 'Sale deleted successfully.');
-    }
+ 
 
     // Generate an invoice for the specified sale
     public function generateInvoice($id)

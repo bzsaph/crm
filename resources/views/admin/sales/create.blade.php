@@ -25,7 +25,7 @@
         @csrf
         <div class="mb-3">
             <label for="unit-price-modal" class="form-label">Unit Price</label>
-            <input type="date" id="invoicedate" class="form-control"  required >
+            <input type="date" name="invoicedate" class="form-control"  required >
         </div>
         <div class="mb-3">
             <select name="client_id" id="client_id" class="form-select form-control" required>
