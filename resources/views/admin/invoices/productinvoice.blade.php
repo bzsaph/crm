@@ -114,7 +114,11 @@
     </div>
 
     <div class="invoice-details">
+<<<<<<< HEAD
        
+=======
+        <h2>Invoice #{{ $sale->id }}</h2>
+>>>>>>> 315a78127a370bed81974f1bb8d45a9a5d03a286
         <p>Invoice No: {{ $sale->invoice_number }}</p>
         <p>Created: {{ \Carbon\Carbon::parse($sale->created_at)->format('F j, Y') }}</p>
         <p>Due: {{ \Carbon\Carbon::parse($sale->created_at)->addDays(15)->format('F j, Y') }}</p>
@@ -127,7 +131,10 @@
         <p>Phone: {{ $company->phone ?? 'Company Phone' }}</p>
         <p>TIN: {{ $company->tinnumber ?? '..............' }}</p>
         <p>Contact Email: {{ $company->email ?? '...........' }}</p>
+<<<<<<< HEAD
         <p>Monthly Invoiced: {{ \Carbon\Carbon::parse($sale->invoicedate)->format('F d, Y') }}</p>
+=======
+>>>>>>> 315a78127a370bed81974f1bb8d45a9a5d03a286
     </div>
 
     <div class="services">
@@ -178,6 +185,7 @@
             </tr>
         </table>
     </div>
+<<<<<<< HEAD
     <div class="recipient">
         <strong>Payment Method</strong>
         <p>Bank Name: {{  $company->bkname  ?? '...........' }}</p>
@@ -186,6 +194,17 @@
         <p>Note: {{ $company->notes ?? '...........' }}</p>
     </div>
     
+=======
+    
+    <div>
+        <p>Payment Method: Bank transfer or check</p>
+        Name:<p>{{ $company->acowner }}</p><br>
+        Bank Name:<p>{{ $company->bkname }}</p><br>
+        Bank Account:<p>{{ $company->bkaccount }}</p><br>
+        Note:<p>{{ $company->notes }}</p>
+  
+    </div>
+>>>>>>> 315a78127a370bed81974f1bb8d45a9a5d03a286
 
     <div class="footer">
         <p>Company Name: {{ $company->name ?? 'Company Name' }}</p>  <p>Company Name: {{ $company->address ?? 'Company address' }}</p><br>

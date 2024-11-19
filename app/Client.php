@@ -20,10 +20,13 @@ class Client extends Model
     'client_type', // Validate client_type
     'tinnumber', // Validate client_type
     'address', // Validate client_type
+<<<<<<< HEAD
     'logged_in_id',
     'user_id',
     'company_id',
     
+=======
+>>>>>>> 315a78127a370bed81974f1bb8d45a9a5d03a286
 ];
     public function billings()
     {
