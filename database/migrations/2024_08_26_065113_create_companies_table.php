@@ -21,6 +21,11 @@ class CreateCompaniesTable extends Migration
             $table->string('logo')->nullable();
             $table->string('email');
             $table->string('website')->nullable();
+            $table->string('tinnumber')->nullable();
+            $table->string('notes')->nullable();
+            $table->string('acowner')->nullable();
+            $table->string('bkaccount')->nullable();
+            $table->string('bkname')->nullable();
             $table->enum('status', ['active', 'closed'])->default('active');
             $table->integer('loged_in_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable()->index();
             $table->timestamps();

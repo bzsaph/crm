@@ -12,7 +12,25 @@ class ClientController extends Controller
     // Display a listing of the clients.
     public function index()
     {
+    $user = Auth::user();
+
+    if ($user->hasRole('super_admin')) {
+        // Super admin can see all clients
         $clients = Client::all();
+    } else {
+        // Get the companies the user is associated with
+        $companyIds = $user->companies->pluck('id')->toArray();
+
+        // Get clients that belong to those companies
+        if (count($companyIds) > 0) {
+            // Get clients that belong to the companies the user is associated with
+            $clients = Client::whereIn('company_id', $companyIds)->get();
+        } else {
+            // If the user isn't associated with any company, you can handle this case as needed
+            $clients = collect();  // Or show a message to the user indicating no clients found
+        }
+    }
+
         return view('admin.clients.index', compact('clients'));
     }
 
@@ -36,11 +54,18 @@ class ClientController extends Controller
             'managed_by' => 'nullable|string|max:255',
             'status' => 'required|boolean',
             'client_type' => 'required|in:vendor,client', // Validate client_type
+            'tinnumber' => 'required|string|max:255', // Validate client_type
+            'address' => 'required|string|max:255', // Validate client_type
+            
+            
         ]);
-
+        $user = Auth::user();
+        $companyIds = $user->companies->pluck('id')->toArray();
         // Add the authenticated user as the logged_in_id
         $validatedData['logged_in_id'] = auth()->user()->id;
-
+        $validatedData['company_id'] =   $companyIds ;
+       
+        
         // Create a new client
         Client::create($validatedData);
 

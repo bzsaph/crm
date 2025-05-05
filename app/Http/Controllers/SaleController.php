@@ -5,6 +5,7 @@ use App\Sale;
 use App\Stock;
 use App\Client;
 use App\Company;
+use App\SoldProduct;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;  // Use this import statement
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +17,24 @@ class SaleController extends Controller
     // Display a listing of the sales
     public function index()
     {
-        $sales = DB::table('sales')
-            ->join('clients', 'sales.client_id', '=', 'clients.id')
-            ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number') // Include 'invoice_number'
-            ->get();
+ // Get the logged-in user
+                $user = Auth::user();
+                $loggedInUserCompanies = Auth::user()->companies->first()->id;
+              
+
+                // Fetch sales data for the logged-in user's company
+                $sales = DB::table('sales')
+                    ->join('clients', 'sales.client_id', '=', 'clients.id')
+                    ->join('companies', 'sales.sold_from', '=', 'companies.id') // Join with the companies table
+                    ->where('sales.sold_from',$loggedInUserCompanies) // Filter sales based on the company of the logged-in user
+                    ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number', 'sales.invoicedate')
+                    ->get();
+
+   
         
+         
         // Optionally, if you need the logged-in user's companies, you can still retrieve it
-        $loggedInUserCompanies = Auth::user()->companies;
-        
+
         return view('admin.sales.index', compact('sales', 'loggedInUserCompanies'));
     }
     
@@ -36,78 +47,102 @@ class SaleController extends Controller
         return view('admin.sales.create', compact('clients', 'stocks'));
     }
 
-    // Store a newly created sale in storage
+
+    
+
     public function store(Request $request)
     {
-        // Validate request
+        // Decode the JSON string for 'products' into an array
+        $products = json_decode($request->products, true);
+    
+        // Now merge the decoded 'products' array back into the request
+        $request->merge(['products' => $products]);
+    
+        // Validate the 'products' field as an array
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'products.*.stock_id' => 'required|exists:stocks,id',
-            'products.*.quantity' => 'required|numeric|min:1',
-            'products.*.unit_price' => 'required|numeric|min:0', // Validate unit_price
+            'client_id' => 'required|exists:clients,id', // Ensure the client exists in the clients table
+            'products' => 'required|array', // Ensure 'products' is an array
+            'products.*.product_id' => 'required|exists:stocks,id', // Validate product_id exists in the stocks table
+            'products.*.quantity' => 'required|numeric|min:1', // Ensure quantity is numeric and greater than 0
+            'products.*.unit_price' => 'required|numeric|min:0', // Ensure unit_price is numeric and not negative
         ]);
     
-        // Begin a transaction
+        // Begin a transaction to ensure atomicity of the sale and stock updates
         DB::beginTransaction();
     
         try {
             // Generate a unique invoice number
             $invoiceNumber = 'INV-' . strtoupper(uniqid());
     
-            // Create a new sale
+            // Create a new sale record
             $sale = new Sale();
             $sale->client_id = $request->client_id;
+            $sale->invoicedate=$request->invoicedate;
             $sale->invoice_number = $invoiceNumber;
-            $sale->sold_from = Auth::user()->companies->first()->id ?? null;
-            $sale->loged_in_id = Auth::id(); // Store the ID of the logged-in user
+            $sale->sold_from = Auth::user()->companies->first()->id ?? null; // Get the first company of the logged-in user
+            $sale->loged_in_id = Auth::id(); // Record the ID of the logged-in user
             $sale->save();
     
-            foreach ($request->products as $product) {
-                $stock = Stock::find($product['stock_id']);
-    
+            // Loop through each product in the sale
+            foreach ($products as $product) {
+                // Find the product in stock using the product ID
+                $stock = Stock::find($product['product_id']);
+                
+                // Check if the product exists in stock
                 if (!$stock) {
                     DB::rollBack();
-                    return redirect()->back()->withErrors(['error' => "Stock not found for ID: {$product['stock_id']}"]);
+                    return redirect()->back()->withErrors(['error' => "Stock not found for ID: {$product['product_id']}"]);
                 }
     
+                // Check if there is enough stock available
                 if ($stock->remaining_stock < $product['quantity']) {
                     DB::rollBack();
                     return redirect()->back()->withErrors(['error' => "Not enough stock for product: {$stock->item_name}"]);
                 }
     
+                // Calculate the total price for the product
                 $unitPrice = $product['unit_price'];
                 $quantity = $product['quantity'];
-                $totalPrice = $unitPrice * $quantity; // Calculate total price
-    
+                $totalPrice = $unitPrice * $quantity; // Unit price * Quantity
+  
+                // Create a sale product entry (pivot table or similar)
                 $sale->soldProducts()->create([
                     'sale_id' => $sale->id,
-                    'stock_id' => $product['stock_id'],
+                    'stock_id' => $product['product_id'],
                     'quantity' => $quantity,
                     'unit_price' => $unitPrice,
-                    'total_price' => $totalPrice, // Store calculated total price
+                  
+                    'total_price' => $totalPrice, // Store the calculated total price
                     'invoice_number' => $invoiceNumber,
                     'sold_from' => Auth::user()->companies->first()->id ?? null, // Get the first company's ID
-                    'loged_in_id' => Auth::id(), // Store the ID of the logged-in user
+                    'loged_in_id' => Auth::id(), // Store the logged-in user ID
                 ]);
     
-                try {
-                    $stock->remaining_stock -= $quantity;
-                    $stock->save();
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    Log::error("Error updating stock: " . $e->getMessage());
-                    return redirect()->back()->withErrors(['error' => 'An error occurred while updating stock.']);
-                }
+                // Deduct the sold quantity from the stock
+                $stock->remaining_stock -= $quantity;
+                $stock->save(); // Update the stock after deduction
             }
     
+            // Commit the transaction if everything is successful
             DB::commit();
+    
+            // Redirect to the sales index page with a success message
             return redirect()->route('sales.index')->with('success', 'Sale recorded successfully! Invoice Number: ' . $invoiceNumber);
+    
         } catch (\Exception $e) {
+            // Rollback the transaction if an error occurs
             DB::rollBack();
+            
+            // Log the error for debugging
             Log::error("Error recording sale: " . $e->getMessage());
-            return redirect()->back()->withErrors(['error' => 'An error occurred while recording the sale.']);
+    
+            // Redirect back with an error message
+            return redirect()->back()->withErrors(['error' => 'An error occurred while recording the sale.'.$e->getMessage()]);
         }
     }
+    
+
+    
     
     
 
@@ -129,33 +164,76 @@ class SaleController extends Controller
     }
 
     // Update the specified sale in storage
-    public function update(Request $request, $id)
+    public function update(Request $request, $saleId)
     {
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'stock_id' => 'required|exists:stocks,id',
-            'quantity' => 'required|integer|min:1',
-            'total_price' => 'required|numeric'
+            'products' => 'required|array',
+            'products.*.id' => 'nullable|exists:sold_products,id', // Existing product ID
+            'products.*.stock_id' => 'required|exists:stocks,id', // Stock ID
+            'products.*.quantity' => 'required|numeric|min:1',    // Quantity
+            'products.*.unit_price' => 'required|numeric|min:0', // Unit price
         ]);
-
-        $sale = Sale::findOrFail($id);
-        $sale->update($request->all());
-
-        $stock = Stock::findOrFail($request->stock_id);
-        $stock->remaining_stock -= $request->quantity;
-        $stock->save();
-
-        return redirect()->route('sales.index')->with('success', 'Sale updated successfully.');
+    
+        DB::beginTransaction();
+    
+        try {
+            foreach ($request->products as $productData) {
+                $soldProduct = SoldProduct::find($productData['id']);
+    
+                // Ensure the record exists (skip if null for new products)
+                if ($soldProduct) {
+                    $stock = Stock::findOrFail($productData['stock_id']);
+    
+                    // If the quantity has changed, restore the old quantity and apply the new one
+                    if ($productData['quantity'] != $soldProduct->quantity) {
+                        // Restore stock for the old quantity
+                        $stock->remaining_stock += $soldProduct->quantity;
+                        $stock->quantity += $soldProduct->quantity;
+    
+                        // If the quantity is increased, ensure there is enough stock
+                        if ($productData['quantity'] > $soldProduct->quantity) {
+                            $stock->remaining_stock -= ($productData['quantity'] - $soldProduct->quantity);
+                            $stock->quantity -= ($productData['quantity'] - $soldProduct->quantity);
+                        } else { // If the quantity decreased, restore the stock
+                            $stock->remaining_stock -= ($soldProduct->quantity - $productData['quantity']);
+                            $stock->quantity -= ($soldProduct->quantity - $productData['quantity']);
+                        }
+    
+                        // Check if the new quantity is valid (i.e., no negative stock)
+                        if ($stock->remaining_stock < 0) {
+                            throw new \Exception("Insufficient stock for {$stock->item_name}");
+                        }
+    
+                        // Update the sold product
+                        $soldProduct->update([
+                            'stock_id' => $productData['stock_id'],
+                            'quantity' => $productData['quantity'],
+                            'unit_price' => $productData['unit_price'],
+                            'total_price' => $productData['quantity'] * $productData['unit_price'],
+                        ]);
+                    }
+    
+                    // Save the updated stock data
+                    $stock->save();
+                }
+            }
+    
+            DB::commit();
+            return redirect()->route('sales.index')->with('success', 'Sale updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'An error occurred: ' . $e->getMessage()]);
+        }
     }
+    
+    
+
+    
+    
+
 
     // Remove the specified sale from storage
-    public function destroy($id)
-    {
-        $sale = Sale::findOrFail($id);
-        // $sale->delete();
-
-        return redirect()->route('sales.index')->with('success', 'Sale deleted successfully.');
-    }
+ 
 
     // Generate an invoice for the specified sale
     public function generateInvoice($id)

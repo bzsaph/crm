@@ -4,7 +4,6 @@
 <section class="section-container">
     <div class="content-wrapper">
         <div class="content-heading">
-           ```blade
             <div>View Company Details</div>
         </div>
         <div class="container-fluid">
@@ -41,6 +40,32 @@
                         <label class="col-md-4 col-form-label text-md-right">Website:</label>
                         <div class="col-md-6">
                             <p class="form-control-plaintext">{{ $company->website }}</p>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label text-md-right">Bank name:</label>
+                        <div class="col-md-6">
+                            <p class="form-control-plaintext">{{ $company->bkname }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label text-md-right">Account account owner:</label>
+                        <div class="col-md-6">
+                            <p class="form-control-plaintext">{{ ucfirst($company->acowner) }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label text-md-right">Account account owner:</label>
+                        <div class="col-md-6">
+                            <p class="form-control-plaintext">{{ ucfirst($company->bkaccount) }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label text-md-right">Notes:</label>
+                        <div class="col-md-6">
+                            <p class="form-control-plaintext">{{ ucfirst($company->notes) }}</p>
                         </div>
                     </div>
                     <div class="form-group row">
