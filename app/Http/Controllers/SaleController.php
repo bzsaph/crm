@@ -7,6 +7,7 @@ use App\Client;
 use App\Company;
 use App\SoldProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Barryvdh\DomPDF\Facade as PDF;  // Use this import statement
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -258,29 +259,35 @@ class SaleController extends Controller
 
     // Generate an invoice for the specified sale
     public function generateInvoice($id)
-    {
+{
+    $sale = Sale::with(['products.stock', 'client'])->findOrFail($id);
+    $company = Company::find($sale->sold_from);
    
-        $sale = Sale::with(['products.stock', 'client'])->findOrFail($id);
-    
-        $company = Company::find($sale->sold_from); // Retrieve the company based on the sold_from field
-    
-        // Define the file name and path
-        $invoiceFile = 'invoice-' . $sale->id . '.pdf';
-        $invoicePath = storage_path('app/invoices/' . $invoiceFile);
-    
-        // Generate the PDF
-        $pdf = PDF::loadView('admin.invoices.productinvoice', ['sale' => $sale, 'company' => $company]);
-    
-        // Save the PDF to the specified path
-        $pdf->save($invoicePath);
-    
-        // Check if file is saved correctly
-        if (!file_exists($invoicePath)) {
-            return response()->json(['error' => 'Invoice file not found.'], 404);
-        }
-    
-        return response()->download($invoicePath);
+
+    // Define the file name and path
+    $invoiceDir = storage_path('app/invoices/');
+    $invoiceFile = $company->name ."invoiced-date" . $sale->invoicedate .  '.pdf';
+    $invoiceFile = str_replace(' ', '_', $invoiceFile); // Replace spaces with underscores
+    $invoicePath = $invoiceDir . $invoiceFile;
+
+    // ✅ Ensure directory exists
+    if (!File::exists($invoiceDir)) {
+        File::makeDirectory($invoiceDir, 0755, true); // Create directory with proper permissions
     }
+
+    // Generate the PDF
+    $pdf = PDF::loadView('admin.invoices.productinvoice', ['sale' => $sale, 'company' => $company]);
+
+    // Save the PDF to the specified path
+    $pdf->save($invoicePath);
+
+    // Check if file was saved successfully
+    if (!file_exists($invoicePath)) {
+        return response()->json(['error' => 'Invoice file not found.'], 404);
+    }
+
+    return response()->download($invoicePath);
+}
     
     
 
