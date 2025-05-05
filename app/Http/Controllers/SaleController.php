@@ -24,11 +24,13 @@ class SaleController extends Controller
 
                 // Fetch sales data for the logged-in user's company
                 $sales = DB::table('sales')
-                    ->join('clients', 'sales.client_id', '=', 'clients.id')
-                    ->join('companies', 'sales.sold_from', '=', 'companies.id') // Join with the companies table
-                    ->where('sales.sold_from',$loggedInUserCompanies) // Filter sales based on the company of the logged-in user
-                    ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number', 'sales.invoicedate')
-                    ->get();
+                ->join('clients', 'sales.client_id', '=', 'clients.id')
+                ->join('companies', 'sales.sold_from', '=', 'companies.id')
+                ->where('sales.sold_from', $loggedInUserCompanies)
+                ->select('sales.id', 'clients.name as client_name', 'sales.invoice_number', 'sales.invoicedate')
+                ->orderBy('sales.created_at', 'desc') // Order by creation date
+                ->get();
+            
 
    
         
@@ -169,52 +171,71 @@ class SaleController extends Controller
         $request->validate([
             'products' => 'required|array',
             'products.*.id' => 'nullable|exists:sold_products,id', // Existing product ID
-            'products.*.stock_id' => 'required|exists:stocks,id', // Stock ID
-            'products.*.quantity' => 'required|numeric|min:1',    // Quantity
-            'products.*.unit_price' => 'required|numeric|min:0', // Unit price
+            'products.*.stock_id' => 'required|exists:stocks,id',  // Stock ID
+            'products.*.quantity' => 'required|numeric|min:1',     // Quantity
+            'products.*.unit_price' => 'required|numeric|min:0',   // Unit price
         ]);
     
         DB::beginTransaction();
     
         try {
             foreach ($request->products as $productData) {
-                $soldProduct = SoldProduct::find($productData['id']);
-    
-                // Ensure the record exists (skip if null for new products)
-                if ($soldProduct) {
+                // Handle new products (no ID present)
+                if (empty($productData['id'])) {
                     $stock = Stock::findOrFail($productData['stock_id']);
     
-                    // If the quantity has changed, restore the old quantity and apply the new one
-                    if ($productData['quantity'] != $soldProduct->quantity) {
-                        // Restore stock for the old quantity
-                        $stock->remaining_stock += $soldProduct->quantity;
-                        $stock->quantity += $soldProduct->quantity;
-    
-                        // If the quantity is increased, ensure there is enough stock
-                        if ($productData['quantity'] > $soldProduct->quantity) {
-                            $stock->remaining_stock -= ($productData['quantity'] - $soldProduct->quantity);
-                            $stock->quantity -= ($productData['quantity'] - $soldProduct->quantity);
-                        } else { // If the quantity decreased, restore the stock
-                            $stock->remaining_stock -= ($soldProduct->quantity - $productData['quantity']);
-                            $stock->quantity -= ($soldProduct->quantity - $productData['quantity']);
-                        }
-    
-                        // Check if the new quantity is valid (i.e., no negative stock)
-                        if ($stock->remaining_stock < 0) {
-                            throw new \Exception("Insufficient stock for {$stock->item_name}");
-                        }
-    
-                        // Update the sold product
-                        $soldProduct->update([
-                            'stock_id' => $productData['stock_id'],
-                            'quantity' => $productData['quantity'],
-                            'unit_price' => $productData['unit_price'],
-                            'total_price' => $productData['quantity'] * $productData['unit_price'],
-                        ]);
+                    if ($stock->remaining_stock < $productData['quantity']) {
+                        throw new \Exception("Insufficient stock for {$stock->item_name}");
                     }
     
-                    // Save the updated stock data
+                    $stock->remaining_stock -= $productData['quantity'];
+                    $stock->quantity -= $productData['quantity'];
                     $stock->save();
+    
+                    SoldProduct::create([
+                        'sale_id' => $saleId,
+                        'stock_id' => $productData['stock_id'],
+                        'quantity' => $productData['quantity'],
+                        'unit_price' => $productData['unit_price'],
+                        'total_price' => $productData['quantity'] * $productData['unit_price'],
+                    ]);
+    
+                    continue;
+                }
+    
+                // Update existing products
+                $soldProduct = SoldProduct::find($productData['id']);
+                if (!$soldProduct) continue;
+    
+                $stock = Stock::findOrFail($productData['stock_id']);
+    
+                $quantityChanged = $productData['quantity'] != $soldProduct->quantity;
+                $stockChanged = $productData['stock_id'] != $soldProduct->stock_id;
+                $priceChanged = $productData['unit_price'] != $soldProduct->unit_price;
+    
+                if ($quantityChanged || $stockChanged || $priceChanged) {
+                    // Restore stock for the old quantity and product
+                    $oldStock = Stock::findOrFail($soldProduct->stock_id);
+                    $oldStock->remaining_stock += $soldProduct->quantity;
+                    $oldStock->quantity += $soldProduct->quantity;
+                    $oldStock->save();
+    
+                    // Reduce stock for the new product
+                    if ($stock->remaining_stock < $productData['quantity']) {
+                        throw new \Exception("Insufficient stock for {$stock->item_name}");
+                    }
+    
+                    $stock->remaining_stock -= $productData['quantity'];
+                    $stock->quantity -= $productData['quantity'];
+                    $stock->save();
+    
+                    // Update the sold product record
+                    $soldProduct->update([
+                        'stock_id' => $productData['stock_id'],
+                        'quantity' => $productData['quantity'],
+                        'unit_price' => $productData['unit_price'],
+                        'total_price' => $productData['quantity'] * $productData['unit_price'],
+                    ]);
                 }
             }
     

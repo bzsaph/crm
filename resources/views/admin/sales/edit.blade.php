@@ -97,55 +97,19 @@
             });
         }
 
-<<<<<<< HEAD
-        // Add another product row dynamically
-        document.getElementById('add-product').addEventListener('click', function() {
-            var container = document.getElementById('products-container');
-            var index = container.getElementsByClassName('product').length;
-
-            var newProductHtml = `
-                <div class="product mb-4 card p-3 rounded">
-                    <h5 class="mb-3 card-title">Product Details</h5>
-                    <div class="mb-3">
-                        <label for="stock_id" class="form-label">Product</label>
-                        <select name="products[${index}][stock_id]" class="form-select stock_id" required>
-                            <option value="">Select a product</option>
-                            @foreach($stocks as $stock)
-                                <option value="{{ $stock->id }}">{{ $stock->item_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Quantity</label>
-                        <input type="number" name="products[${index}][quantity]" class="form-control quantity" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="unit_price" class="form-label">Unit Price</label>
-                        <input type="number" name="products[${index}][unit_price]" class="form-control unit_price" step="0.01" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="total_price" class="form-label">Total Price</label>
-                        <input type="number" name="products[${index}][total_price]" class="form-control total_price" step="0.01" readonly>
-                    </div>
-                </div>
-            `;
-
-            container.insertAdjacentHTML('beforeend', newProductHtml);
-            updateTotalPrice();
-=======
       
 
         document.querySelector('#products-container').addEventListener('click', function(e) {
             if (e.target.classList.contains('remove-product')) {
                 e.target.closest('tr').remove();
             }
->>>>>>> ededae6b4433537e12b00911aa7123bf45ad3c65
         });
 
         updateTotalPrice();
     });
+
+
+    
 </script>
+
 @endsection
