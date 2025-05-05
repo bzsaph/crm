@@ -9,7 +9,9 @@
     <meta name="description" content="Bazimya saphani">
     <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/product/logo.png'">
-    <title>Internshep and Project management </title>
+    <title>{{ config('app.name') }} - rwanda</title>
+
+  
 
     @yield('title')
 
