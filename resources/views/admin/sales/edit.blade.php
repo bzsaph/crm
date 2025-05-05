@@ -19,6 +19,7 @@
         @csrf
         @method('PUT')
         
+        <!-- Client Selection -->
         <div class="mb-4">
             <label for="client_id" class="form-label">Client</label>
             <select name="client_id" id="client_id" class="form-select" required>
@@ -29,10 +30,11 @@
             </select>
         </div>
 
+        <!-- Products Container -->
         <div id="products-container">
             @foreach($sale->soldProducts as $index => $product)
-                <div class="product mb-4 border p-3 rounded">
-                    <h5 class="mb-3">Product Details</h5>
+                <div class="product mb-4 card p-3 rounded">
+                    <h5 class="mb-3 card-title">Product Details</h5>
                     <div class="mb-3">
                         <label for="stock_id" class="form-label">Product</label>
                         <select name="products[{{ $index }}][stock_id]" class="form-select stock_id" required>
@@ -59,15 +61,20 @@
                     </div>
                 </div>
             @endforeach
+            <button type="button" id="add-product" class="btn btn-secondary mb-3">Add Another Product</button>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Update Sale</button>
         </div>
 
-        <button type="button" id="add-product" class="btn btn-secondary mb-3">Add Another Product</button>
-        <button type="submit" class="btn btn-primary">Update Sale</button>
+        <!-- Add Product Button -->
+       
     </form>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Function to update the total price for each product based on quantity and unit price
         function updateTotalPrice() {
             document.querySelectorAll('.product').forEach(function(productDiv) {
                 const quantityInput = productDiv.querySelector('.quantity');
@@ -88,13 +95,14 @@
             });
         }
 
+        // Add another product row dynamically
         document.getElementById('add-product').addEventListener('click', function() {
             var container = document.getElementById('products-container');
             var index = container.getElementsByClassName('product').length;
 
             var newProductHtml = `
-                <div class="product mb-4 border p-3 rounded">
-                    <h5 class="mb-3">Product Details</h5>
+                <div class="product mb-4 card p-3 rounded">
+                    <h5 class="mb-3 card-title">Product Details</h5>
                     <div class="mb-3">
                         <label for="stock_id" class="form-label">Product</label>
                         <select name="products[${index}][stock_id]" class="form-select stock_id" required>
