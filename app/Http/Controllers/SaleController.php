@@ -390,6 +390,37 @@ class SaleController extends Controller
     return response()->download($invoicePath);
 }
     
+    // Generate an invoice for the specified sale
+    public function generateperform($id)
+{
+    $sale = Sale::with(['products.stock', 'client'])->findOrFail($id);
+    $company = Company::find($sale->sold_from);
+   
+
+    // Define the file name and path
+    $invoiceDir = storage_path('app/invoices/');
+    $invoiceFile = $company->name ."invoiced-date" . $sale->invoicedate .  '.pdf';
+    $invoiceFile = str_replace(' ', '_', $invoiceFile); // Replace spaces with underscores
+    $invoicePath = $invoiceDir . $invoiceFile;
+
+    // ✅ Ensure directory exists
+    if (!File::exists($invoiceDir)) {
+        File::makeDirectory($invoiceDir, 0755, true); // Create directory with proper permissions
+    }
+
+    // Generate the PDF
+    $pdf = PDF::loadView('admin.invoices.perform_invoice_page', ['sale' => $sale, 'company' => $company]);
+
+    // Save the PDF to the specified path
+    $pdf->save($invoicePath);
+
+    // Check if file was saved successfully
+    if (!file_exists($invoicePath)) {
+        return response()->json(['error' => 'Invoice file not found.'], 404);
+    }
+
+    return response()->download($invoicePath);
+}
     
 
 }
