@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <title>Perform Invoice : {{ $company->name ?? 'Company Name' }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@
            
         }
         .header img {
-            height: 50px;
+            height: 80px;
         }
         .invoice-details {
             padding: 20px;
@@ -115,7 +115,7 @@
 
     <div class="invoice-details">
        
-        <p>Invoice No: {{ $sale->invoice_number }}</p>
+        <p>Perform Invoice No: {{ $sale->invoice_number }}</p>
         <p>Created: {{ \Carbon\Carbon::parse($sale->created_at)->format('F j, Y') }}</p>
         <p>Due: {{ \Carbon\Carbon::parse($sale->created_at)->addDays(15)->format('F j, Y') }}</p>
     </div>
@@ -184,6 +184,9 @@
         <p>Account Awner: {{ $company->acowner  ?? '...........' }}</p>
         <p>Count Number: {{$company->bkaccount ?? '...........' }}</p>
         <p>Note: {{ $company->notes ?? '...........' }}</p>
+        <p>Please Note: Valid For 18 days start from : {{ \Carbon\Carbon::parse($sale->invoicedate)->format('F d, Y') }}  </p>
+        <p>Delivery Period : With In 4 Weeks Upon Receiving LPO </p>
+         <p>Company Name: {{ $company->name ?? 'Company Name' }}</p>  <p>Company Address: {{ $company->address ?? 'Company address' }}</p><br>
     </div>
     
 

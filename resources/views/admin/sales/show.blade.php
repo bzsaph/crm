@@ -55,6 +55,7 @@
             <div>
                 <a href="{{ route('sales.index') }}" class="btn btn-primary">Back to Sales List</a>
                 <a href="{{ route('sales.invoice', $sale->id) }}" class="btn btn-success">Download Invoice</a>
+                <a href="{{ route('sales.perform', $sale->id) }}" class="btn btn-success btn-sm">perform</a>
             </div>
         </div>
     </div>

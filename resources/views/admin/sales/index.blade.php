@@ -37,6 +37,8 @@
                             <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-warning btn-sm">Edit</a>
                            
                             <a href="{{ route('sales.invoice', $sale->id) }}" class="btn btn-success btn-sm">Invoice</a>
+                            <a href="{{ route('sales.perform', $sale->id) }}" class="btn btn-success btn-sm">perform</a>
+                            
                         </td>
                     </tr>
                 @empty

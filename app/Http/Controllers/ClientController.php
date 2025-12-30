@@ -43,34 +43,31 @@ class ClientController extends Controller
         return view('admin.clients.create', compact('activeUsers'));;
     }
 
-    // Store a newly created client in the database.
-    public function store(Request $request)
-    {
-        // Validate input data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:clients,email',
-            'phone' => 'nullable|string|max:20',
-            'managed_by' => 'nullable|string|max:255',
-            'status' => 'required|boolean',
-            'client_type' => 'required|in:vendor,client', // Validate client_type
-            'tinnumber' => 'required|string|max:255', // Validate client_type
-            'address' => 'required|string|max:255', // Validate client_type
-            
-            
-        ]);
-        $user = Auth::user();
-        $companyIds = $user->companies->pluck('id')->toArray();
-        // Add the authenticated user as the logged_in_id
-        $validatedData['logged_in_id'] = auth()->user()->id;
-        $validatedData['company_id'] =   $companyIds ;
-       
-        
-        // Create a new client
-        Client::create($validatedData);
+  public function store(Request $request)
+{
+    // Validate input data
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:clients,email',
+        'phone' => 'nullable|string|max:20',
+        'managed_by' => 'nullable|string|max:255',
+        'status' => 'required|in:0,1', // status is a string, not boolean
+        'client_type' => 'required|in:vendor,client',
+        'tinnumber' => 'required|string|max:255',
+        'address' => 'required|string|max:255',
+    ]);
 
-        return redirect()->route('companies.create')->with('success', 'Client created successfully!');
-    }
+    // Add the authenticated user as the logged_in_id
+    $validatedData['loged_in_id'] = auth()->user()->id;
+        $validatedData['company_id'] =1;
+    
+
+    // Create a new client
+    Client::create($validatedData);
+
+    return redirect()->route('companies.create')->with('success', 'Client created successfully!');
+}
+
 
     // Display the specified client.
     public function show(Client $client)
