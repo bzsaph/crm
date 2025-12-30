@@ -13,10 +13,12 @@ class Sale extends Model
     protected $fillable = [
         'client_id',
         'invoice_number',
-        'loged_in_id',
+        'invoicedate',   // ✅ ADD THIS
         'sold_from',
+        'loged_in_id',
+       
     ];
-
+   
     // Define the relationship with the Client model
     public function client() {
         return $this->belongsTo(Client::class);

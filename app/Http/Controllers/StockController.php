@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Stock;
 use App\SoldStock;
+use App\TaxCode;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
@@ -16,75 +17,87 @@ class StockController extends Controller
 
     public function create()
     {
-        return view('admin.stock.create_edit');
+        $taxCodes = TaxCode::all(); // get all tax codes from DB
+        return view('admin.stock.create_edit', compact('taxCodes'));
     }
-
+    
+    public function edit($id)
+    {
+        $stock = Stock::findOrFail($id);
+        $taxCodes = TaxCode::all();
+        return view('admin.stock.create_edit', compact('stock', 'taxCodes'));
+    }
+    
     public function store(Request $request)
     {
-        // Validate the request
         $request->validate([
-            'item_name' => 'required|string',
-            'quantity' => 'required|integer', // Incoming quantity
-            'loged_in_id' => 'nullable|integer|exists:users,id',
+            'item_name'    => 'required|string|max:255',
+            'itemCd'       => 'nullable|string|max:100',
+            'itemClsCd'    => 'nullable|string|max:100',
+            'description'  => 'nullable|string',
+            'taxCode'      => 'nullable|in:TAX_A,TAX_B,TAX_C,TAX_D',
+            'quantity'     => 'required|integer|min:0',
         ]);
     
-        // Check if the item already exists in the stock
-        $stockItem = Stock::where('item_name', $request->item_name)->first();
+        // Check if stock exists
+        $stock = Stock::where('itemCd', $request->itemCd)->first();
     
-        // If the item exists, update the remaining stock by adding the incoming quantity
-        if ($stockItem) {
-            // Add the incoming quantity to the existing remaining_stock
-            $stockItem->remaining_stock += $request->quantity;
-            $stockItem->save(); // Save the updated stock item
+        if ($stock) {
+            // Increase both quantity and remaining_stock
+            $stock->quantity += $request->quantity;
+            $stock->remaining_stock += $request->quantity;
+            $stock->save();
         } else {
-            // If the item doesn't exist, create a new stock record
             Stock::create([
-                'item_name' => $request->item_name,
-                'quantity' => $request->quantity, // Set initial quantity
-                'remaining_stock' => $request->quantity, // Initial remaining stock is the same as quantity
-                'loged_in_id' => $request->loged_in_id, // If provided
+                'item_name'       => $request->item_name,
+                'itemCd'          => $request->itemCd,
+                'itemClsCd'       => $request->itemClsCd,
+                'description'     => $request->description,
+                'taxCode'         => $request->taxCode,
+                'quantity'        => $request->quantity,
+                'remaining_stock' => $request->quantity,
+                'loged_in_id'     => auth()->id(),
             ]);
         }
     
-        // Redirect back with a success message
-        return redirect()->route('stock.index')->with('success', 'Stock item added successfully.');
+        return redirect()->route('stock.index')->with('success', 'Stock item saved successfully.');
     }
     
-
-    public function edit($stockId)
+    public function update(Request $request, $id)
     {
-        $stock = Stock::findOrFail($stockId);
-        return view('admin.stock.create_edit', compact('stock'));
-    }
-
-    public function update(Request $request, $stockId)
-    {
-        // Validate the request
         $request->validate([
-            'item_name' => 'required|string|max:255',
-            'quantity' => 'required|integer',
+            'item_name'    => 'required|string|max:255',
+            'itemCd'       => 'nullable|string|max:100',
+            'itemClsCd'    => 'nullable|string|max:100',
+            'description'  => 'nullable|string',
+            'taxCode'      => 'nullable|in:TAX_A,TAX_B,TAX_C,TAX_D',
+            'quantity'     => 'required|integer|min:0',
         ]);
     
-        // Find the stock item by ID
-        $stock = Stock::findOrFail($stockId);
+        $stock = Stock::findOrFail($id);
     
-        // Calculate the difference between the incoming quantity and the existing quantity
-        $quantityDifference = $request->remaining_stock;
+        // Calculate difference for remaining_stock
+        $difference = $request->quantity;
+        $newRemaining = $stock->remaining_stock + $difference;
     
-        // Update the stock item details
+        if ($newRemaining < 0) {
+            return back()->withErrors(['quantity' => 'Cannot reduce quantity below items already sold.']);
+        }
+    
         $stock->update([
-            'item_name' => $request->item_name, // Update item name
-               // Update the quantity
+            'item_name'       => $request->item_name,
+            'itemCd'          => $request->itemCd,
+            'itemClsCd'       => $request->itemClsCd,
+            'description'     => $request->description,
+            'taxCode'         => $request->taxCode,
+            'quantity'        => $request->quantity,
+            'remaining_stock' => $newRemaining,
         ]);
     
-        // Adjust the remaining stock based on the difference
-        $stock->quantity=$quantityDifference+$request->quantity;
-        $stock->remaining_stock = $quantityDifference+$request->quantity;
-        $stock->save();  // Save the updated stock
-    
-        // Redirect back with success message
-        return redirect()->route('stock.index')->with('success', 'Stock updated.');
+        return redirect()->route('stock.index')->with('success', 'Stock updated successfully.');
     }
+    
+
     
 
     public function sold()

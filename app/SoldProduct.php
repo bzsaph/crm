@@ -20,6 +20,10 @@ class SoldProduct extends Model
         'invoice_number', 
         'loged_in_id',
         
+        'company_tin','computation_type','sale_type','voucher_amount','discount_amount',
+            'business_partner_name','invoice_date','client_tin','total_amount','total_vat',
+            'client_tin_pin','exchange_rate','currency','discount_type','item_code','item_description',
+            'item_category','batch','tax_code','tax_rate','expire_date'
       
     ];
 

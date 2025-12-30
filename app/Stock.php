@@ -15,6 +15,10 @@ class Stock extends Model
             'quantity',
             'remaining_stock',
             'loged_in_id',
+            'itemClsCd',
+            'itemCd',
+            'taxCode',
+            'description',
             
         ];
     
@@ -23,4 +27,9 @@ class Stock extends Model
         {
             return $this->belongsTo(User::class, 'loged_in_id');
         }
+        public function tax()
+        {
+            return $this->belongsTo(TaxCode::class, 'taxCode', 'name');
+        }
+
 }

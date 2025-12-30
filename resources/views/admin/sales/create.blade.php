@@ -1,167 +1,246 @@
 @extends('layouts.adminapp')
 
 @section('content')
-<div class="container mt-5">
-    <h2 class="mb-4">Record Sale</h2>
+<section class="section-container">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Record Sale</h5>
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#productModal">
+                        + Add Product
+                    </button>
+                </div>
 
-    <!-- Display validation errors -->
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+                <div class="card-body">
+                    {{-- Errors --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-    <!-- Trigger Modal Button -->
-    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#productModal">
-        Add Product
-    </button>
+                    <form action="{{ route('sales.store') }}" method="POST">
+                        @csrf
 
-    <!-- Client Selection -->
-    <form action="{{ route('sales.store') }}" method="POST">
-        @csrf
-        <div class="mb-3">
-            <label for="unit-price-modal" class="form-label">Unit Price</label>
-            <input type="date" name="invoicedate" class="form-control"  required >
-        </div>
-        <div class="mb-3">
-            <select name="client_id" id="client_id" class="form-select form-control" required>
-                <option value="">Select a client</option>
-                @foreach($clients as $client)
-                    <option value="{{ $client->id }}">{{ $client->name }}</option>
-                @endforeach
-            </select>
-        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Invoice Date</label>
+                                <input type="date" name="invoicedate"
+                                       class="form-control"
+                                       value="{{ old('invoicedate') }}"
+                                       required>
+                            </div>
 
-        <!-- Products List Display -->
-        <div class="mb-4">
-            <label class="form-label">Products List</label>
-            <ul id="products-list" class="list-group"></ul>
-        </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Client</label>
+                                <select name="client_id" id="client_id" class="form-control" required>
+                                    <option value="">Select Client</option>
+                                    @foreach($clients as $client)
+                                        <option value="{{ $client->id }}"
+                                                data-tin="{{ $client->tinnumber }}"
+                                                {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                            {{ $client->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-        <!-- Hidden Input for Product Data -->
-        <input type="hidden" name="products" id="products-data">
+                            <div class="col-md-4">
+                                <label class="form-label">Company TIN</label>
+                                <input type="text" name="company_tin" id="company_tin"
+                                       class="form-control"
+                                       value="{{ old('company_tin') }}" readonly>
+                            </div>
+                        </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-success">Record Sale</button>
-    </form>
-</div>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Currency</label>
+                                <input type="text" name="currency"
+                                       class="form-control"
+                                       value="{{ old('currency','RWF') }}">
+                            </div>
 
-<!-- Modal for Adding Product -->
-<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">Add Product</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                            <div class="col-md-4">
+                                <label class="form-label">Sale Type</label>
+                                <select name="sale_type" class="form-control">
+                                    <option value="NORMAL" {{ old('sale_type')=='NORMAL'?'selected':'' }}>NORMAL</option>
+                                    <option value="INVOICE" {{ old('sale_type')=='INVOICE'?'selected':'' }}>INVOICE</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Discount Amount</label>
+                                <input type="number" step="0.01"
+                                       name="discount_amount"
+                                       class="form-control"
+                                       value="{{ old('discount_amount') }}">
+                            </div>
+                        </div>
+
+                        {{-- Products Table --}}
+                        <div class="table-responsive mt-4">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th width="80">Qty</th>
+                                        <th width="120">Unit</th>
+                                        <th width="120">Total</th>
+                                        <th width="40"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="products-table"></tbody>
+                            </table>
+                        </div>
+
+                        <input type="hidden" name="products" id="products-data" value='{{ old("products") }}'>
+
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn btn-success">
+                                Save Sale
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="product-select-modal" class="form-label">Product</label>
-                    <select id="product-select-modal" class="form-select form-control" required>
-                        <option value="">Select a product</option>
-                        @foreach($stocks as $stock)
-                            <option value="{{ $stock->id }}" data-unit-price="{{ $stock->unit_price }}">
-                                {{ $stock->item_name }}
-                            </option>
-                        @endforeach
-                    </select>
+        </div>
+
+        {{-- PRODUCT MODAL --}}
+        <div class="modal fade" id="productModal" tabindex="-1">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Add Product</h6>
+                        <button class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label">Product</label>
+                            <select id="productSelect" class="form-control">
+                                <option value="">Select</option>
+                                @foreach($stocks as $stock)
+                                    <option value="{{ $stock->id }}"
+                                            data-price="{{ $stock->unit_price }}">
+                                        {{ $stock->item_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Unit Price</label>
+                            <input type="number" step="0.01" id="unitPrice" class="form-control">
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" id="quantity" class="form-control">
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Total</label>
+                            <input type="number" id="totalPrice" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer p-2">
+                        <button class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-sm btn-primary" id="addProductBtn">Add</button>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="unit-price-modal" class="form-label">Unit Price</label>
-                    <input type="number" id="unit-price-modal" class="form-control" step="0.01" >
-                </div>
-                <div class="mb-3">
-                    <label for="quantity-modal" class="form-label">Quantity</label>
-                    <input type="number" id="quantity-modal" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="total-price-modal" class="form-label">Total Price</label>
-                    <input type="number" id="total-price-modal" class="form-control" step="0.01" readonly>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="add-product-btn" class="btn btn-primary">Add Product</button>
             </div>
         </div>
     </div>
-</div>
+</section>
 
+{{-- SCRIPT --}}
 <script>
-   document.addEventListener('DOMContentLoaded', () => {
-    const productSelectModal = document.getElementById('product-select-modal');
-    const quantityModal = document.getElementById('quantity-modal');
-    const unitPriceModal = document.getElementById('unit-price-modal');
-    const totalPriceModal = document.getElementById('total-price-modal');
-    const addProductBtn = document.getElementById('add-product-btn');
-    const productsList = document.getElementById('products-list');
-    const productsDataInput = document.getElementById('products-data');
+document.addEventListener('DOMContentLoaded', () => {
+    const productSelect = document.getElementById('productSelect');
+    const unitPrice = document.getElementById('unitPrice');
+    const quantity = document.getElementById('quantity');
+    const totalPrice = document.getElementById('totalPrice');
+    const table = document.getElementById('products-table');
+    const productsInput = document.getElementById('products-data');
 
     let products = [];
 
-    // Update Unit Price and Total Price
-    productSelectModal.addEventListener('change', () => {
-        const selectedOption = productSelectModal.selectedOptions[0];
-        unitPriceModal.value = selectedOption.dataset.unitPrice || 0;
-        updateModalTotalPrice();
-    });
-
-    quantityModal.addEventListener('input', updateModalTotalPrice);
-
-    function updateModalTotalPrice() {
-        const quantity = parseFloat(quantityModal.value) || 0;
-        const unitPrice = parseFloat(unitPriceModal.value) || 0;
-        totalPriceModal.value = (quantity * unitPrice).toFixed(2);
+    // 🔁 RESTORE OLD PRODUCTS
+    if (productsInput.value) {
+        try {
+            products = JSON.parse(productsInput.value);
+            products.forEach(item => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.unit_price}</td>
+                        <td>${item.total_price}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"
+                                onclick="this.closest('tr').remove()">×</button>
+                        </td>
+                    </tr>`;
+            });
+        } catch(e) {
+            console.error('Invalid products JSON');
+        }
     }
 
-    // Add Product to List
-    addProductBtn.addEventListener('click', () => {
-        const productId = productSelectModal.value;
-        const productName = productSelectModal.selectedOptions[0]?.text || '';
-        const quantity = parseFloat(quantityModal.value) || 0;
-        const unitPrice = parseFloat(unitPriceModal.value) || 0;
-        const totalPrice = parseFloat(totalPriceModal.value) || 0;
+    function updateTotal() {
+        totalPrice.value = ( (quantity.value||0) * (unitPrice.value||0) ).toFixed(2);
+    }
 
-        if (!productId || quantity <= 0) {
-            alert('Please select a product and enter a valid quantity.');
-            return;
-        }
+    productSelect.addEventListener('change', () => {
+        unitPrice.value = productSelect.selectedOptions[0]?.dataset.price || 0;
+        updateTotal();
+    });
 
-        // Add product to the products array
-        products.push({
-            product_id: productId,
-            product_name: productName,
-            quantity,
-            unit_price: unitPrice,
-            total_price: totalPrice
-        });
+    quantity.addEventListener('input', updateTotal);
 
-        // Update the hidden input field with the serialized product data
-        productsDataInput.value = JSON.stringify(products);
+    document.getElementById('addProductBtn').addEventListener('click', () => {
+        if (!productSelect.value || quantity.value <= 0) return alert('Invalid input');
 
-        // Debugging: Log the products data to the console
-        console.log(productsDataInput.value);  // <-- This is the key
+        const item = {
+            product_id: productSelect.value,
+            name: productSelect.selectedOptions[0].text,
+            quantity: quantity.value,
+            unit_price: unitPrice.value,
+            total_price: totalPrice.value
+        };
 
-        // Update the products list UI
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-        listItem.textContent = `${productName} - Qty: ${quantity}, Unit Price: ${unitPrice}, Total: ${totalPrice}`;
-        productsList.appendChild(listItem);
+        products.push(item);
+        productsInput.value = JSON.stringify(products);
 
-        // Reset modal inputs
-        productSelectModal.value = '';
-        quantityModal.value = '';
-        unitPriceModal.value = '';
-        totalPriceModal.value = '';
+        table.innerHTML += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.unit_price}</td>
+                <td>${item.total_price}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">×</button>
+                </td>
+            </tr>
+        `;
 
-        // Close the modal
         $('#productModal').modal('hide');
+        productSelect.value = quantity.value = unitPrice.value = totalPrice.value = '';
+    });
+
+    // Auto-fill company TIN
+    const clientSelect = document.getElementById('client_id');
+    const tinInput = document.getElementById('company_tin');
+    clientSelect.addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        tinInput.value = selectedOption.dataset.tin || '';
     });
 });
 </script>
