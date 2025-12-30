@@ -311,7 +311,7 @@
                             </ul>
                         </li>
                         
-                        <li class="">
+                        {{-- <li class="">
                             <a href="#indexBilling" title="Billing" data-toggle="collapse">
                                 <em class="icon-wallet" style="color:#fff !important"></em>
                                 <span data-localize="sidebar.nav.pages.BILLING" style="color:#fff !important">Billing</span>
@@ -329,9 +329,9 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
                         
-                        <li class="">
+                        {{-- <li class="">
                             <a href="#indexComplaints" title="Complaints" data-toggle="collapse">
                                 <em class="icon-exclamation" style="color:#fff !important"></em>
                                 <span data-localize="sidebar.nav.pages.COMPLAINTS" style="color:#fff !important">Complaints</span>
@@ -349,9 +349,9 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
                         
-                        <li class="">
+                        {{-- <li class="">
                             <a href="#indexReports" title="Reports" data-toggle="collapse">
                                 <em class="icon-doc" style="color:#fff !important"></em>
                                 <span data-localize="sidebar.nav.pages.REPORTS" style="color:#fff !important">Reports</span>
@@ -367,7 +367,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
                         
                        
                         <li class="">
@@ -388,23 +388,7 @@
                                     </a>
                                 </li>
                                 <!-- Conditional links based on whether $sale is available -->
-                                @isset($sale)
-                                    <li class="">
-                                        <a href="{{ route('sales.show', $sale->id) }}" title="View Sale">
-                                            <span data-localize="sidebar.nav.pages.VIEW_SALE">View Sale</span>
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="{{ route('sales.edit', $sale->id) }}" title="Edit Sale">
-                                            <span data-localize="sidebar.nav.pages.EDIT_SALE">Edit Sale</span>
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="{{ route('sales.invoice', $sale->id) }}" title="Download Invoice">
-                                            <span data-localize="sidebar.nav.pages.DOWNLOAD_INVOICE">Download Invoice</span>
-                                        </a>
-                                    </li>
-                                @endisset
+                               
                             </ul>
                         </li>
                         
@@ -414,14 +398,14 @@
                                 <span>Stock Management</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('stock.sold') }}"  style="color:#fff !important">
                                 <i class="fas fa-box-open"></i>
                                 <span>Sold Stock</span>
                             </a>
-                        </li>
+                        </li> --}}
                         
-                        <li class="">
+                        {{-- <li class="">
                             <a href="#indexTasks" title="Tasks" data-toggle="collapse"  style="color:#fff !important">
                                 <em class="icon-list"></em>
                                 <span data-localize="sidebar.nav.pages.TASKS">Tasks</span>
@@ -439,7 +423,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
                     
                     </ul>
                     <!-- END sidebar nav-->
