@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice  <p>{{ $company->name ?? 'Company Name' }} <p>Invoice No: {{ $sale->invoice_number }}</p></p></title>
+    <title>Invoice</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -133,8 +133,9 @@
                 <tr>
                     <th>Item</th>
                     <th>Quantity</th>
-                    <th>Unit Price</th>
                     <th>VAT</th>
+                    <th>Unit Price</th>
+                   
                     <th>Total Price</th>
                 </tr>
             </thead>
@@ -152,10 +153,12 @@
                     @endphp
                     <tr>
                         <td>{{ $product->stock->item_name ?? 'N/A' }}</td>
-                        <td>{{ $quantity }}</td>
-                        <td>{{ number_format($unitPrice, 2) }}</td>
-                        <td>{{ number_format($vat, 2) }}</td>
-                        <td>{{ number_format($lineTotal + $vat, 2) }}</td>
+                        
+                        <td>{{ $product->quantity ?? 'N/A' }}</td>
+                        <td>{{ number_format($vat, 2 ) }}</td>
+                        <td>{{ number_format($product->unit_price, 2) }}</td>
+                        <td>{{ number_format($productTotal, 2) }}</td>
+                     
                     </tr>
                 @endforeach
             </tbody>

@@ -542,7 +542,7 @@
     <script src="{{ asset('assets') }}/admin/js/select2.js"></script>
     <script src="{{ asset('assets') }}/admin/js/logoview.js"></script>
     <script src="{{ asset('assets') }}/admin/js/site-en.json"></script>
-    
+    @yield('scripts')
     <script>
         $(document).ready(function() {
             $(".alert").slideDown(300).delay(5000).slideUp(300);
