@@ -232,6 +232,7 @@ class SaleController extends Controller
     // Update the specified sale in storage
     public function update(Request $request, $saleId)
     {
+       
         $request->validate([
             'products' => 'required|array',
             'products.*.id' => 'nullable|exists:sold_products,id',
@@ -327,6 +328,7 @@ class SaleController extends Controller
 
                 $oldQuantity = $soldProduct->quantity;
                 $requestedQty = $productData['quantity'];
+                $newStockId = $newStock->invoicedate;
 
                 // Return old quantity to old stock
                 $oldStock->remaining_stock += $oldQuantity;
@@ -368,7 +370,7 @@ class SaleController extends Controller
                     'voucher_amount'      => $request->voucher_amount ?? 0,
                     'discount_amount'     => $request->discount_amount ?? 0,
                     'business_partner_name' => optional($sale->client)->name,
-                    'invoice_date'        => $sale->invoicedate,
+                    'invoice_date'        => $request->invoicedate,
                     'client_tin'          => optional($sale->client)->tin,
                     'total_amount'        => $totalPrice,
                     'total_vat'           => $vatAmount,
@@ -385,6 +387,7 @@ class SaleController extends Controller
                 ]);
             }
 
+          
             DB::commit();
 
             return redirect()
