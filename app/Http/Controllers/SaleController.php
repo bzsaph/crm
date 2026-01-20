@@ -205,8 +205,7 @@ class SaleController extends Controller
             $companyId = Auth::user()->companies->first()->id ?? null;
 
             // Get clients related to the sale (adjust if needed)
-            $clients = Client::where('company_id', $sale->client_id)->get();
-
+            $clients = Client::where('company_id', $companyId)->get();
             // Get stocks created by users in the same company
             if ($companyId) {
                 $stocks = Stock::whereIn('loged_in_id', function ($query) use ($companyId) {
