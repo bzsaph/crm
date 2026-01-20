@@ -239,6 +239,7 @@ class SaleController extends Controller
             'products.*.stock_id' => 'required|exists:stocks,id',
             'products.*.quantity' => 'required|numeric|min:1',
             'products.*.unit_price' => 'required|numeric|min:0',
+            'invoicedate' => 'required|date',
         ]);
 
         DB::beginTransaction();
@@ -282,7 +283,7 @@ class SaleController extends Controller
                         'unit_price'          => $unitPrice,
                         'total_price'         => $totalPrice,
                         'invoice_number'      => $sale->invoice_number,
-                        'invoice_date'        => $sale->invoicedate,
+                        'invoice_date'        => $request->invoicedate,
                         'currency'            => $request->currency ?? 'RWF',
                         'sale_type'           => $request->sale_type,
                         'company_tin'         => $request->company_tin,
@@ -329,7 +330,7 @@ class SaleController extends Controller
                 $oldQuantity = $soldProduct->quantity;
                 $requestedQty = $productData['quantity'];
                 $newStockId = $newStock->invoicedate;
-
+                $sale->invoice_date = $request->invoicedate;
                 // Return old quantity to old stock
                 $oldStock->remaining_stock += $oldQuantity;
                 $oldStock->save();

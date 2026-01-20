@@ -104,8 +104,8 @@
 
     <div class="invoice-details">
         <p>Invoice No: {{ $sale->invoice_number }}</p>
-        <p>Created: {{ \Carbon\Carbon::parse($sale->created_at)->format('F j, Y') }}</p>
-        <p>Due: {{ \Carbon\Carbon::parse($sale->created_at)->addDays(15)->format('F j, Y') }}</p>
+        <p>Created: {{ \Carbon\Carbon::parse($sale->invoice_date)->format('F j, Y') }}</p>
+        <p>Due: {{ \Carbon\Carbon::parse($sale->invoice_date)->addDays(15)->format('F j, Y') }}</p>
     </div>
 
     <div class="recipient">
