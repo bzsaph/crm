@@ -128,6 +128,8 @@ Route::prefix('sales')->name('sales.')->group(function () {
     Route::delete('{id}', [SaleController::class, 'destroy'])->name('destroy');
     Route::get('{id}/invoice', [SaleController::class, 'generateInvoice'])->name('invoice');
     Route::get('{id}/perform', [SaleController::class, 'generateperform'])->name('perform');
+    Route::get('{id}/generatePO', [SaleController::class, 'generatePO'])->name('generatePO');
+    
 });
 Route::prefix('admin')->middleware('auth')->group(function () {
     // Route to display the form to create a new user

@@ -47,6 +47,7 @@
                                 <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-warning btn-smaller">Edit</a>
                                 <a href="{{ route('sales.invoice', $sale->id) }}" class="btn btn-success btn-smaller">Invoice</a>
                                 <a href="{{ route('sales.perform', $sale->id) }}" class="btn btn-success btn-smaller">Perform</a>
+                                <a href="{{ route('sales.generatePO', $sale->id) }}" class="btn btn-secondary btn-smaller">PO</a>
                             </td>
                             
                             <!-- Add this CSS somewhere in your Blade or main CSS file -->

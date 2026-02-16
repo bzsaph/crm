@@ -475,4 +475,36 @@ class SaleController extends Controller
             return redirect()->route('sales.index')->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
+
+    public function generatePO($id)
+{
+    $sale = Sale::with(['products.stock', 'client'])
+                ->findOrFail($id);
+
+    $company = Company::find($sale->sold_from);
+
+    $poDir = storage_path('app/purchase_orders/');
+
+    if (!File::exists($poDir)) {
+        File::makeDirectory($poDir, 0755, true);
+    }
+
+    $companyName = str_replace(' ', '_', $company->name ?? 'Company');
+
+    $poFile = $companyName . "_PO_" . ($sale->invoice_number ?? 'DRAFT') . ".pdf";
+
+    $poPath = $poDir . $poFile;
+
+    $pdf = PDF::loadView('admin.invoices.purchaseorder', [
+        'sale' => $sale,
+        'company' => $company
+    ]);
+
+    $pdf->save($poPath);
+
+    return response()->download($poPath);
+}
+
+
+
 }
