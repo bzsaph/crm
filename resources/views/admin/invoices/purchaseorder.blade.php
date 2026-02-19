@@ -17,23 +17,23 @@
 body{
   font-family: Arial, Helvetica, sans-serif;
   background:#f4f6f9;
-  padding:20px;
+  padding:10px;
 }
 
 /* ===== PRINT BUTTON ===== */
 .print-btn-container{
   text-align:right;
-  margin-bottom:15px;
+  margin-bottom:10px;
 }
 
 .print-btn{
-  padding:8px 18px;
+  padding:6px 14px;
   background:#0d6efd;
   color:white;
   border:none;
-  border-radius:5px;
+  border-radius:4px;
   cursor:pointer;
-  font-size:14px;
+  font-size:13px;
 }
 
 .print-btn:hover{
@@ -42,12 +42,13 @@ body{
 
 /* ===== DOCUMENT ===== */
 .document{
-  max-width:900px;
+  width:210mm;
+  min-height:297mm;
   margin:auto;
   background:#ffffff;
-  padding:30px;
-  border-radius:10px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  padding:15mm;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+  overflow:hidden;
 }
 
 /* ===== HEADER ===== */
@@ -55,19 +56,28 @@ body{
   display:flex;
   justify-content:space-between;
   border-bottom:2px solid #0d6efd;
-  padding-bottom:15px;
-  margin-bottom:20px;
+  padding-bottom:10px;
+  margin-bottom:15px;
 }
 
 .company-info h1{
-  font-size:22px;
+  font-size:18px;
   color:#0d6efd;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.company-info img{
+  height:35px;
+  width:35px;
 }
 
 .company-info p{
-  font-size:13px;
+  font-size:12px;
   color:#555;
-  margin-top:5px;
+  margin-top:4px;
+  line-height:1.4;
 }
 
 .po-info{
@@ -75,59 +85,59 @@ body{
 }
 
 .po-info h2{
-  font-size:18px;
-  color:#333;
+  font-size:16px;
+  margin-bottom:5px;
 }
 
 .po-info p{
-  font-size:13px;
-  color:#555;
+  font-size:12px;
+  line-height:1.4;
 }
 
 /* ===== SECTION ===== */
 .section{
-  margin-top:25px;
+  margin-top:15px;
 }
 
 .section h3{
-  font-size:14px;
-  margin-bottom:10px;
+  font-size:13px;
+  margin-bottom:6px;
   border-bottom:1px solid #ddd;
-  padding-bottom:5px;
-  color:#333;
+  padding-bottom:4px;
 }
 
 /* ===== TWO COLUMNS ===== */
 .two-columns{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:20px;
+  gap:12px;
 }
 
 .box{
   border:1px solid #ddd;
-  padding:15px;
-  border-radius:6px;
-  font-size:13px;
+  padding:10px;
+  border-radius:5px;
+  font-size:12px;
+  line-height:1.4;
 }
 
 /* ===== TABLE ===== */
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:10px;
-  font-size:13px;
+  margin-top:8px;
+  font-size:12px;
 }
 
 table th{
   background:#f0f3f8;
-  text-align:left;
-  padding:8px;
+  padding:6px;
   border:1px solid #ddd;
+  text-align:left;
 }
 
 table td{
-  padding:8px;
+  padding:6px;
   border:1px solid #ddd;
 }
 
@@ -137,48 +147,40 @@ table td{
 
 /* ===== NOTES ===== */
 .notes ul{
-  margin-left:18px;
-  margin-top:8px;
+  margin-left:15px;
+  margin-top:5px;
 }
 
 .notes li{
-  font-size:13px;
-  margin-bottom:6px;
+  font-size:12px;
+  margin-bottom:4px;
 }
 
 /* ===== SIGNATURES ===== */
 .signatures{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:20px;
-  margin-top:30px;
+  gap:12px;
+  margin-top:15px;
 }
 
 .signature-box{
   border:1px dashed #aaa;
-  padding:20px;
-  height:120px;
-  font-size:13px;
-}
-
-/* ===== FOOTER ===== */
-.footer{
-  margin-top:30px;
+  padding:10px;
+  height:80px;
   font-size:12px;
-  text-align:center;
-  color:#666;
 }
 
 /* ===== PRINT SETTINGS ===== */
 @media print{
 
   .print-btn-container{
-    display:none !important; /* Hide button */
+    display:none !important;
   }
 
   @page{
     size:A4;
-    margin:15mm;
+    margin:10mm;
   }
 
   body{
@@ -188,18 +190,11 @@ table td{
 
   .document{
     box-shadow:none;
-    border-radius:0;
     padding:0;
   }
 
-  .footer{
-    font-size:10px;
-  }
-
-  .section,
-  table,
-  .signatures{
-    page-break-inside:avoid;
+  *{
+    page-break-inside:avoid !important;
   }
 }
 
@@ -218,19 +213,22 @@ table td{
 <!-- HEADER -->
 <div class="header">
   <div class="company-info">
-    <h1>  <img src="test3.png" style="height: 40px;width: 40px;" alt="Company Logo">Yanjye Limited</h1>
+    <h1>
+      <img src="test3.png" alt="Company Logo">
+      Yanjye Limited
+    </h1>
     <p>
       {{ $company->name ?? '' }}<br>
-     {{ $company->address ?? '' }}<br>
-    Phone: {{ $company->phone ?? '' }}<br>
-    Email: {{ $company->email ?? '' }}<br>
-    VAT: {{ $company->tinnumber ?? '' }}
-  </p>
+      {{ $company->address ?? '' }}<br>
+      Phone: {{ $company->phone ?? '' }}<br>
+      Email: {{ $company->email ?? '' }}<br>
+      VAT: {{ $company->tinnumber ?? '' }}
+    </p>
   </div>
 
   <div class="po-info">
     <h2>Purchase Order</h2>
-    <p><strong>PO No:</strong>{{ $sale->invoice_number ?? 'DRAFT' }}</p>
+    <p><strong>PO No:</strong> {{ $sale->invoice_number ?? 'DRAFT' }}</p>
     <p><strong>Issue Date:</strong> {{ $sale->invoice_date ? \Carbon\Carbon::parse($sale->invoice_date)->format('F j, Y') : '' }}</p>
     <p><strong>Required By:</strong> {{ $sale->invoice_date ? \Carbon\Carbon::parse($sale->invoice_date)->format('F j, Y') : '' }}</p>
     <p><strong>Payment Terms:</strong> Net 2 Days</p>
@@ -296,12 +294,12 @@ table td{
 <div class="section notes">
   <h3>Notes & Terms</h3>
   <ul>
-    <li>Goods must be delivered within the agreed timeline.Software of hard ware compateble</li>
+    <li>Goods must be delivered within the agreed timeline.</li>
     <li>All items must match the specified technical requirements.</li>
     <li>All invoices must reference this Purchase Order number.</li>
     <li>Payment will be processed within 2 days after verified delivery.</li>
-    <li>An advance payment of 2,000,000 RWF two million shall be made.</li>
-    <li>Failure to deliver may result in a 50% penalty of the total amount.</li>
+    <li>An advance payment of 2,000,000 RWF shall be made.</li>
+    <li>Failure to deliver may result in a 50% penalty.</li>
     <li>Total amount is inclusive of all applicable taxes.</li>
   </ul>
 </div>
@@ -333,8 +331,6 @@ table td{
 
   </div>
 </div>
-
-
 
 </div>
 
