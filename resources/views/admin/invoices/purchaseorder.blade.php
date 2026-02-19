@@ -220,12 +220,12 @@ table td{
   <div class="company-info">
     <h1>  <img src="test3.png" style="height: 40px;width: 40px;" alt="Company Logo">Yanjye Limited</h1>
     <p>
-        {{ $company->name ?? '' }}<br>
-       {{ $company->address ?? '' }}<br>
-      Phone: {{ $company->phone ?? '' }}<br>
-      Email: {{ $company->email ?? '' }}<br>
-      VAT: {{ $company->tinnumber ?? '' }}
-    </p>
+      {{ $company->name ?? '' }}<br>
+     {{ $company->address ?? '' }}<br>
+    Phone: {{ $company->phone ?? '' }}<br>
+    Email: {{ $company->email ?? '' }}<br>
+    VAT: {{ $company->tinnumber ?? '' }}
+  </p>
   </div>
 
   <div class="po-info">
@@ -313,7 +313,7 @@ table td{
 
     <div class="signature-box">
       Prepared By:<br><br>
-      Signature: {{ Auth::user()->name }}
+      Signature: ____________________
     </div>
 
     <div class="signature-box">
