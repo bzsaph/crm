@@ -1,120 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Purchase Order - {{ $sale->invoice_number ?? 'DRAFT' }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purchase Order - Yanjye Limited</title>
 
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header img { height: 50px; }
+<style>
 
-        .po-details { padding: 20px; margin: 20px; border: 1px solid #ccc; border-radius: 5px; }
+/* ===== RESET ===== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-        .box { border: 1px solid black; padding: 10px; width: 45%; display: inline-block; vertical-align: top; }
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid black; padding: 6px; text-align: left; }
-        th { background: #f2f2f2; }
+/* ===== PRINT BUTTON ===== */
+.print-btn-container{
+  text-align:right;
+  margin-bottom:15px;
+}
 
-        .summary-table { width: 40%; margin-left: 60%; margin-top: 20px; }
-        .summary-table td { border: 1px solid black; padding: 5px; text-align: right; }
-        .summary-table tr:last-child td { font-weight: bold; }
+.print-btn{
+  padding:8px 18px;
+  background:#0d6efd;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:14px;
+}
 
-        .footer { text-align: center; margin-top: 30px; font-size: 10px; }
-    </style>
+.print-btn:hover{
+  background:#084298;
+}
+
+/* ===== DOCUMENT ===== */
+.document{
+  max-width:900px;
+  margin:auto;
+  background:#ffffff;
+  padding:30px;
+  border-radius:10px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* ===== HEADER ===== */
+.header{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:2px solid #0d6efd;
+  padding-bottom:15px;
+  margin-bottom:20px;
+}
+
+.company-info h1{
+  font-size:22px;
+  color:#0d6efd;
+}
+
+.company-info p{
+  font-size:13px;
+  color:#555;
+  margin-top:5px;
+}
+
+.po-info{
+  text-align:right;
+}
+
+.po-info h2{
+  font-size:18px;
+  color:#333;
+}
+
+.po-info p{
+  font-size:13px;
+  color:#555;
+}
+
+/* ===== SECTION ===== */
+.section{
+  margin-top:25px;
+}
+
+.section h3{
+  font-size:14px;
+  margin-bottom:10px;
+  border-bottom:1px solid #ddd;
+  padding-bottom:5px;
+  color:#333;
+}
+
+/* ===== TWO COLUMNS ===== */
+.two-columns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.box{
+  border:1px solid #ddd;
+  padding:15px;
+  border-radius:6px;
+  font-size:13px;
+}
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:13px;
+}
+
+table th{
+  background:#f0f3f8;
+  text-align:left;
+  padding:8px;
+  border:1px solid #ddd;
+}
+
+table td{
+  padding:8px;
+  border:1px solid #ddd;
+}
+
+.text-right{
+  text-align:right;
+}
+
+/* ===== NOTES ===== */
+.notes ul{
+  margin-left:18px;
+  margin-top:8px;
+}
+
+.notes li{
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+/* ===== SIGNATURES ===== */
+.signatures{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  margin-top:30px;
+}
+
+.signature-box{
+  border:1px dashed #aaa;
+  padding:20px;
+  height:120px;
+  font-size:13px;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+  margin-top:30px;
+  font-size:12px;
+  text-align:center;
+  color:#666;
+}
+
+/* ===== PRINT SETTINGS ===== */
+@media print{
+
+  .print-btn-container{
+    display:none !important; /* Hide button */
+  }
+
+  @page{
+    size:A4;
+    margin:15mm;
+  }
+
+  body{
+    background:white;
+    padding:0;
+  }
+
+  .document{
+    box-shadow:none;
+    border-radius:0;
+    padding:0;
+  }
+
+  .footer{
+    font-size:10px;
+  }
+
+  .section,
+  table,
+  .signatures{
+    page-break-inside:avoid;
+  }
+}
+
+</style>
 </head>
+
 <body>
 
+<!-- PRINT BUTTON -->
+<div class="print-btn-container">
+  <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<div class="document">
+
+<!-- HEADER -->
 <div class="header">
-    @if($company->logo && File::exists(public_path('logos/' . $company->logo)))
-        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('logos/' . $company->logo))) }}" alt="Logo">
-    @else
-        <h3>{{ $company->name ?? 'Company Name' }}</h3>
-    @endif
+  <div class="company-info">
+    <h1>  <img src="test3.png" style="height: 40px;width: 40px;" alt="Company Logo">Yanjye Limited</h1>
+    <p>
+        {{ $company->name ?? '' }}<br>
+       {{ $company->address ?? '' }}<br>
+      Phone: {{ $company->phone ?? '' }}<br>
+      Email: {{ $company->email ?? '' }}<br>
+      VAT: {{ $company->tinnumber ?? '' }}
+    </p>
+  </div>
 
-    <h2>PURCHASE ORDER</h2>
+  <div class="po-info">
+    <h2>Purchase Order</h2>
+    <p><strong>PO No:</strong>{{ $sale->invoice_number ?? 'DRAFT' }}</p>
+    <p><strong>Issue Date:</strong> {{ $sale->invoice_date ? \Carbon\Carbon::parse($sale->invoice_date)->format('F j, Y') : '' }}</p>
+    <p><strong>Required By:</strong> {{ $sale->invoice_date ? \Carbon\Carbon::parse($sale->invoice_date)->format('F j, Y') : '' }}</p>
+    <p><strong>Payment Terms:</strong> Net 2 Days</p>
+  </div>
 </div>
 
-<div class="po-details">
-    <p><strong>PO Number:</strong> {{ $sale->invoice_number ?? 'DRAFT' }}</p>
-    <p><strong>PO Date:</strong> {{ $sale->invoice_date ? \Carbon\Carbon::parse($sale->invoice_date)->format('F j, Y') : '' }}</p>
-    <p><strong>Expected Delivery:</strong> {{ $sale->delivery_date ? \Carbon\Carbon::parse($sale->delivery_date)->format('F j, Y') : '' }}</p>
+<!-- VENDOR & BUYER -->
+<div class="section">
+  <h3>Vendor & Buyer Information</h3>
+  <div class="two-columns">
+
+    <div class="box">
+      <strong>Buyer:</strong><br>
+      {{ Auth::user()->name }} – IT Department<br>
+      Gasogi Cyaruzinge<br>
+      Phone: +250 788 377 874<br>
+      Contact: CTO
+    </div>
+
+    <div class="box">
+      <strong>Vendor:</strong><br>
+      Kigali Smart Solutions Ltd<br>
+      Contact: Mr. Salah Naser<br>
+      Tona House, 1st Floor, Shop No.2<br>
+      Kigali City, Rwanda<br>
+      Phone: +250 793 190 001<br>
+      Email: info@kigalismartsolutions.com<br>
+      VAT: 121551638
+    </div>
+
+  </div>
 </div>
 
-<!-- Vendor Info -->
-<div class="box">
-    <strong>Vendor:</strong>
-    <p>Name: ...........................</p>
-    <p>Address: ........................</p>
-    <p>Phone: ..........................</p>
-    <p>TIN: ............................</p>
-    <p>Email: ..........................</p>
-</div>
+<!-- ITEMS -->
+<div class="section">
+  <h3>Order Items</h3>
 
-<!-- Bill To -->
-<div class="box">
-    <strong>Bill To:</strong>
-    <p>{{ $company->name ?? '' }}</p>
-    <p>{{ $company->address ?? '' }}</p>
-    <p>Phone: {{ $company->phone ?? '' }}</p>
-    <p>TIN: {{ $company->tinnumber ?? '' }}</p>
-    <p>Email: {{ $company->email ?? '' }}</p>
-</div>
-
-<!-- Items Table -->
-<table>
+  <table>
     <thead>
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Unit Cost</th>
-           
-            <th>Total</th>
-        </tr>
+      <tr>
+        <th>#</th>
+        <th>Description</th>
+        <th>Qty</th>
+        <th>Unit</th>
+        <th class="text-right">Unit Price (RWF)</th>
+        <th class="text-right">Total (RWF)</th>
+      </tr>
     </thead>
     <tbody>
-       
-           
-                <tr>
-                    <td>          </td>
-                    <td>         </td>
-                    <td>        </td>
-                    <td>        </td>
-                </tr>
-    
-            {{-- Empty rows for manual entry --}}
-            @for($i = 0; $i < 9; $i++)
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            @endfor
-     
+      <tr>
+        <td>1</td>
+        <td>SecuGen Hamster Plus HSDUO3P Fingerprint Reader</td>
+        <td>33</td>
+        <td>Unit</td>
+        <td class="text-right">140,000</td>
+        <td class="text-right">4,620,000</td>
+      </tr>
     </tbody>
-</table>
-
-<!-- Summary Table -->
-
-
-<!-- Terms & Conditions -->
-<div style="margin:20px;">
-    <strong>Terms & Conditions:</strong>
-    <p>Payment Terms: {{ $sale->payment_terms ?? '..........................................................................................................................................................................................................................................................As agreed' }}</p>
-    <p>Delivery Period: Within {{ $sale->delivery_period ?? '............................... Days' }}</p>
-    <p>Authorized By: _______________________________________________________</p>
+  </table>
 </div>
 
-<!-- Footer -->
-<div class="footer">
-    <p>{{ $company->name ?? '' }} | {{ $company->address ?? '' }}</p>
+<!-- NOTES -->
+<div class="section notes">
+  <h3>Notes & Terms</h3>
+  <ul>
+    <li>Goods must be delivered within the agreed timeline.Software of hard ware compateble</li>
+    <li>All items must match the specified technical requirements.</li>
+    <li>All invoices must reference this Purchase Order number.</li>
+    <li>Payment will be processed within 2 days after verified delivery.</li>
+    <li>An advance payment of 2,000,000 RWF two million shall be made.</li>
+    <li>Failure to deliver may result in a 50% penalty of the total amount.</li>
+    <li>Total amount is inclusive of all applicable taxes.</li>
+  </ul>
+</div>
+
+<!-- SIGNATURES -->
+<div class="section">
+  <h3>Authorisation & Signatures</h3>
+  <div class="signatures">
+
+    <div class="signature-box">
+      Prepared By:<br><br>
+      Signature: {{ Auth::user()->name }}
+    </div>
+
+    <div class="signature-box">
+      Approved By:<br><br>
+      Signature: ____________________
+    </div>
+
+    <div class="signature-box">
+      Finance Officer:<br><br>
+      Signature: ____________________
+    </div>
+
+    <div class="signature-box">
+      Vendor Acknowledgement:<br><br>
+      Signature: ____________________
+    </div>
+
+  </div>
+</div>
+
+
+
 </div>
 
 </body>
